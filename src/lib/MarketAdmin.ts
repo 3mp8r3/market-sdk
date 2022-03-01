@@ -1,4 +1,4 @@
-import { provider, PromiEvent, TransactionReceipt } from "web3-core";
+import { PromiEvent, TransactionReceipt } from "web3-core";
 import BN from "bn.js";
 
 import MarketContract from "./MarketContract";
@@ -11,29 +11,29 @@ import Comptroller from "./Comptroller";
 class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
   readonly comptroller: Comptroller;
 
-  constructor(provider: provider, address: string, comptroller: Comptroller){
-    super(provider, address, MarketAdminArtifact.abi);
+  constructor(comptroller: Comptroller, address: string){
+    super(comptroller.web3, address, MarketAdminArtifact.abi);
     this.comptroller = comptroller;
   }
   // Comptroller Methods
 
   setCollateralFactor(
     address: string,
-    newCollateralFactorMantissa: BN,
+    newCollateralFactorMantissa: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setCollateralFactor(this.comptroller.address, address, newCollateralFactorMantissa).send(tx);
   }
 
   setCloseFactor(
-    newCloseFactorMantissa: BN,
+    newCloseFactorMantissa: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setCloseFactor(this.comptroller.address, newCloseFactorMantissa).send(tx);
   }
 
   setLiquidationIncentive(
-    newLiquidationIncentive: BN,
+    newLiquidationIncentive: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setLiquidationIncentive(this.comptroller.address, newLiquidationIncentive).send(tx);
@@ -49,7 +49,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
   deployMarket(
     isCEther: boolean,
     constructorData: string | number[],
-    collateralFactorMantissa: BN,
+    collateralFactorMantissa: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.deployMarket(this.comptroller.address, isCEther, constructorData, collateralFactorMantissa).send(tx);
@@ -57,7 +57,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
 
   setBorrowCaps(
     cTokens: string[],
-    newBorrowCaps: BN[],
+    newBorrowCaps: (number | string | BN)[],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setBorrowCaps(this.comptroller.address, cTokens, newBorrowCaps).send(tx);
@@ -65,7 +65,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
 
   setSupplyCaps(
     cTokens: string[],
-    newSupplyCaps: BN[],
+    newSupplyCaps: (number | string | BN)[],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setSupplyCaps(this.comptroller.address, cTokens, newSupplyCaps).send(tx);
@@ -106,14 +106,14 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
 
   setAdminFee(
     cToken: string,
-    newAdminFeeMantissa: BN,
+    newAdminFeeMantissa: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setAdminFee(this.comptroller.address, cToken, newAdminFeeMantissa).send(tx);
   }
   setReserveFactor(
     cToken: string,
-    newReserveFactorMantissa: BN,
+    newReserveFactorMantissa: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.setReserveFactor(this.comptroller.address, cToken, newReserveFactorMantissa).send(tx);
@@ -136,7 +136,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
 
   withdrawAdminFees(
     cToken: string,
-    withdrawAmount: BN,
+    withdrawAmount: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.withdrawAdminFees(this.comptroller.address, cToken, withdrawAmount).send(tx);
@@ -144,7 +144,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
 
   reduceReserves(
     cToken: string,
-    resuceAmmount: BN, 
+    resuceAmmount: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.reduceReserves(this.comptroller.address, cToken, resuceAmmount).send(tx);
