@@ -1,4 +1,4 @@
-import { provider, PromiEvent, TransactionReceipt } from "web3-core";
+import { PromiEvent, TransactionReceipt } from "web3-core";
 import BN from "bn.js";
 
 import MarketContract from "./MarketContract";
@@ -7,9 +7,12 @@ import ComptrollerArtifact from "../abi/Comptroller.json";
 import { Comptroller as ComptrollerWeb3Interface } from "../types/Comptroller";
 import { NonPayableTx } from "../types/types";
 
+import MarketAdmin from "./MarketAdmin";
+import MarketSDK from "./MarketSDK";
+
 class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
-  constructor(provider: provider, address: string){
-    super(provider, address, ComptrollerArtifact.abi);
+  constructor(sdk: MarketSDK, address: string){
+    super(sdk.web3, address, ComptrollerArtifact.abi);
   }
 
   _become(
@@ -144,8 +147,8 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.accountAssets(arg0, arg1).call();
   }
 
-  admin(): Promise<string> {
-    return this.contract.methods.admin().call();
+  async admin(): Promise<MarketAdmin> {
+    return new MarketAdmin(this, await this.contract.methods.admin().call());
   }
 
   adminHasRights(): Promise<boolean> {
