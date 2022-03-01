@@ -6,179 +6,162 @@ import MarketAdminArtifact from "../abi/MarketAdmin.json";
 
 import { MarketAdmin as MarketAdminWeb3Interface } from "../types/MarketAdmin";
 import { NonPayableTx } from "../types/types";
-
-// Having a separate class overwritting typechain allows us to do things like replacing `comptroller: string` with `comptroller: Comptroller` and more at some point in the future, and also makes it easier to swap web3.js if we ever need to.
+import Comptroller from "./Comptroller";
 
 class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
-  constructor(provider: provider, address: string){
+  readonly comptroller: Comptroller;
+
+  constructor(provider: provider, address: string, comptroller: Comptroller){
     super(provider, address, MarketAdminArtifact.abi);
+    this.comptroller = comptroller;
   }
   // Comptroller Methods
 
   setCollateralFactor(
-    comptroller: string,
     address: string,
     newCollateralFactorMantissa: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setCollateralFactor(comptroller, address, newCollateralFactorMantissa).send(tx);
+    return this.contract.methods.setCollateralFactor(this.comptroller.address, address, newCollateralFactorMantissa).send(tx);
   }
 
   setCloseFactor(
-    comptroller: string,
     newCloseFactorMantissa: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setCloseFactor(comptroller, newCloseFactorMantissa).send(tx);
+    return this.contract.methods.setCloseFactor(this.comptroller.address, newCloseFactorMantissa).send(tx);
   }
 
   setLiquidationIncentive(
-    comptroller: string,
     newLiquidationIncentive: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setLiquidationIncentive(comptroller, newLiquidationIncentive).send(tx);
+    return this.contract.methods.setLiquidationIncentive(this.comptroller.address, newLiquidationIncentive).send(tx);
   }
 
   supportMarket(
-    comptroller: string,
     cToken: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.supportMarket(comptroller, cToken).send(tx);
+    return this.contract.methods.supportMarket(this.comptroller.address, cToken).send(tx);
   }
 
   deployMarket(
-    comptroller: string,
     isCEther: boolean,
     constructorData: string | number[],
     collateralFactorMantissa: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.deployMarket(comptroller, isCEther, constructorData, collateralFactorMantissa).send(tx);
+    return this.contract.methods.deployMarket(this.comptroller.address, isCEther, constructorData, collateralFactorMantissa).send(tx);
   }
 
   setBorrowCaps(
-    comptroller: string,
     cTokens: string[],
     newBorrowCaps: BN[],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setBorrowCaps(comptroller, cTokens, newBorrowCaps).send(tx);
+    return this.contract.methods.setBorrowCaps(this.comptroller.address, cTokens, newBorrowCaps).send(tx);
   }
 
   setSupplyCaps(
-    comptroller: string,
     cTokens: string[],
     newSupplyCaps: BN[],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setSupplyCaps(comptroller, cTokens, newSupplyCaps).send(tx);
+    return this.contract.methods.setSupplyCaps(this.comptroller.address, cTokens, newSupplyCaps).send(tx);
   }
- 
+
   addRewardsDistributor(
-    comptroller: string,
     distributor: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.addRewardsDistributor(comptroller, distributor).send(tx);
+    return this.contract.methods.addRewardsDistributor(this.comptroller.address, distributor).send(tx);
   }
 
   setCTokenActionState(
-    comptroller: string,
     cToken: string,
     action: string | number,
     state: boolean,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setCTokenActionState(comptroller, cToken, action, state).send(tx);
+    return this.contract.methods.setCTokenActionState(this.comptroller.address, cToken, action, state).send(tx);
   }
 
   setGlobalActionState(
-    comptroller: string,
     action: string | number,
     state: boolean,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setGlobalActionState(comptroller, action, state).send(tx);
+    return this.contract.methods.setGlobalActionState(this.comptroller.address, action, state).send(tx);
   }
 
   setPriceOracle(
-    comptroller: string,
     newOracle: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setPriceOracle(comptroller, newOracle).send(tx);
+    return this.contract.methods.setPriceOracle(this.comptroller.address, newOracle).send(tx);
   }
 
   // CToken mnethods
 
   setAdminFee(
-    comptroller: string,
     cToken: string,
     newAdminFeeMantissa: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setAdminFee(comptroller, cToken, newAdminFeeMantissa).send(tx);
+    return this.contract.methods.setAdminFee(this.comptroller.address, cToken, newAdminFeeMantissa).send(tx);
   }
   setReserveFactor(
-    comptroller: string,
     cToken: string,
     newReserveFactorMantissa: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setReserveFactor(comptroller, cToken, newReserveFactorMantissa).send(tx);
+    return this.contract.methods.setReserveFactor(this.comptroller.address, cToken, newReserveFactorMantissa).send(tx);
   }
   setIRM(
-    comptroller: string,
     cToken: string,
     newIRM: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setIRM(comptroller, cToken, newIRM).send(tx);
+    return this.contract.methods.setIRM(this.comptroller.address, cToken, newIRM).send(tx);
   }
   setNameAndSymbol(
-    comptroller: string,
     cToken: string,
     name: string,
     symbol: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setNameAndSymbol(comptroller, cToken, name, symbol).send(tx);
+    return this.contract.methods.setNameAndSymbol(this.comptroller.address, cToken, name, symbol).send(tx);
   }
 
   withdrawAdminFees(
-    comptroller: string,
     cToken: string,
     withdrawAmount: BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.withdrawAdminFees(comptroller, cToken, withdrawAmount).send(tx);
+    return this.contract.methods.withdrawAdminFees(this.comptroller.address, cToken, withdrawAmount).send(tx);
   }
 
   reduceReserves(
-    comptroller: string,
     cToken: string,
     resuceAmmount: BN, 
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.reduceReserves(comptroller, cToken, resuceAmmount).send(tx);
+    return this.contract.methods.reduceReserves(this.comptroller.address, cToken, resuceAmmount).send(tx);
   }
 
   // Manager Functions
 
   proposeNewManager(
-    comptroller: string,
     newManager: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.proposeNewManager(comptroller, newManager).send(tx);
+    return this.contract.methods.proposeNewManager(this.comptroller.address, newManager).send(tx);
   }
   acceptManager(
-    comptroller: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.acceptManager(comptroller).send(tx);
+    return this.contract.methods.acceptManager(this.comptroller.address).send(tx);
   }
 }
 
