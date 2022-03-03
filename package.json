@@ -1,7 +1,7 @@
 {
   "name": "market-sdk",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Apoorv <apoorvsingal0@gmail.com>",
   "license": "MIT",
   "scripts": {
