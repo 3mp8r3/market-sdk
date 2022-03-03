@@ -14,7 +14,7 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
   readonly comptroller: Comptroller;
 
   constructor(comptroller: Comptroller, address: string){
-    super(comptroller.web3, address, CTokenArtifact.abi);
+    super(comptroller.sdk, address, CTokenArtifact.abi);
     this.comptroller = comptroller;
   }
 

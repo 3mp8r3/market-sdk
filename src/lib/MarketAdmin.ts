@@ -12,7 +12,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
   readonly comptroller: Comptroller;
 
   constructor(comptroller: Comptroller, address: string){
-    super(comptroller.web3, address, MarketAdminArtifact.abi);
+    super(comptroller.sdk, address, MarketAdminArtifact.abi);
     this.comptroller = comptroller;
   }
 

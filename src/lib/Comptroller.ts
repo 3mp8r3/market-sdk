@@ -12,7 +12,7 @@ import MarketSDK from "./MarketSDK";
 
 class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   constructor(sdk: MarketSDK, address: string){
-    super(sdk.web3, address, ComptrollerArtifact.abi);
+    super(sdk, address, ComptrollerArtifact.abi);
   }
 
   _become(
