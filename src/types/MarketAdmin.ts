@@ -22,12 +22,10 @@ export interface EventOptions {
 }
 
 export type AcceptManager = ContractEventLog<{
-  comptroller: string;
   oldManager: string;
   newManager: string;
   0: string;
   1: string;
-  2: string;
 }>;
 export type ManagerInitialized = ContractEventLog<{
   comptroller: string;
@@ -50,113 +48,113 @@ export interface MarketAdmin extends BaseContract {
   ): MarketAdmin;
   clone(): MarketAdmin;
   methods: {
-    acceptManager(comptroller: string): NonPayableTransactionObject<void>;
+    acceptAdmin(): NonPayableTransactionObject<void>;
+
+    acceptManager(): NonPayableTransactionObject<void>;
 
     addRewardsDistributor(
-      comptroller: string,
       distributor: string
     ): NonPayableTransactionObject<void>;
 
+    comptroller(): NonPayableTransactionObject<string>;
+
     deployMarket(
-      comptroller: string,
-      isCEther: boolean,
-      constructorData: string | number[],
-      collateralFactorMantissa: number | string | BN
+      deployData: [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string | number[],
+        number | string | BN,
+        number | string | BN,
+        number | string | BN
+      ]
     ): NonPayableTransactionObject<void>;
 
-    feeDistributor(): NonPayableTransactionObject<string>;
+    manager(): NonPayableTransactionObject<string>;
 
-    proposeNewManager(
-      comptroller: string,
-      newManager: string
-    ): NonPayableTransactionObject<void>;
+    pendingManager(): NonPayableTransactionObject<string>;
+
+    proposeNewManager(newManager: string): NonPayableTransactionObject<void>;
 
     reduceReserves(
-      comptroller: string,
       cToken: string,
-      reduceAmount: number | string | BN
+      reduceAmount: number | string | BN,
+      to: string
     ): NonPayableTransactionObject<void>;
 
     setAdminFee(
-      comptroller: string,
       cToken: string,
       newAdminFeeMantissa: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setBorrowCaps(
-      comptroller: string,
       cTokens: string[],
       newBorrowCaps: (number | string | BN)[]
     ): NonPayableTransactionObject<void>;
 
     setCTokenActionState(
-      comptroller: string,
       cToken: string,
       action: number | string | BN,
       state: boolean
     ): NonPayableTransactionObject<void>;
 
     setCloseFactor(
-      comptroller: string,
       newCloseFactorMantissa: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setCollateralFactor(
-      comptroller: string,
       cToken: string,
       newCollateralFactorMantissa: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setGlobalActionState(
-      comptroller: string,
       action: number | string | BN,
       state: boolean
     ): NonPayableTransactionObject<void>;
 
-    setIRM(
-      comptroller: string,
-      cToken: string,
-      newIRM: string
-    ): NonPayableTransactionObject<void>;
+    setIRM(cToken: string, newIRM: string): NonPayableTransactionObject<void>;
 
     setLiquidationIncentive(
-      comptroller: string,
       newLiquidationIncentiveMantissa: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setNameAndSymbol(
-      comptroller: string,
       cToken: string,
       _name: string,
       _symbol: string
     ): NonPayableTransactionObject<void>;
 
-    setPriceOracle(
-      comptroller: string,
-      newOracle: string
-    ): NonPayableTransactionObject<void>;
+    setPriceOracle(newOracle: string): NonPayableTransactionObject<void>;
 
     setReserveFactor(
-      comptroller: string,
       cToken: string,
       newReserveFactorMantissa: number | string | BN
     ): NonPayableTransactionObject<void>;
 
     setSupplyCaps(
-      comptroller: string,
       cTokens: string[],
       newSupplyCaps: (number | string | BN)[]
     ): NonPayableTransactionObject<void>;
 
-    supportMarket(
-      comptroller: string,
-      cToken: string
+    setWhitelistEnforcement(
+      enforce: boolean
     ): NonPayableTransactionObject<void>;
 
+    setWhitelistStatuses(
+      suppliers: string[],
+      statuses: boolean[]
+    ): NonPayableTransactionObject<void>;
+
+    supportMarket(cToken: string): NonPayableTransactionObject<void>;
+
+    unsupportMarket(cToken: string): NonPayableTransactionObject<void>;
+
     withdrawAdminFees(
-      comptroller: string,
       cToken: string,
-      withdrawAmount: number | string | BN
+      withdrawAmount: number | string | BN,
+      to: string
     ): NonPayableTransactionObject<void>;
   };
   events: {

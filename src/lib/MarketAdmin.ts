@@ -15,44 +15,73 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     super(comptroller.web3, address, MarketAdminArtifact.abi);
     this.comptroller = comptroller;
   }
-  // Comptroller Methods
 
-  setCollateralFactor(
-    address: string,
-    newCollateralFactorMantissa: number | string | BN,
-    tx?: NonPayableTx,
+  acceptAdmin(
+    tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setCollateralFactor(this.comptroller.address, address, newCollateralFactorMantissa).send(tx);
+    return this.contract.methods.acceptAdmin().send(tx);
   }
 
-  setCloseFactor(
-    newCloseFactorMantissa: number | string | BN,
-    tx?: NonPayableTx,
+  acceptManager(
+    tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setCloseFactor(this.comptroller.address, newCloseFactorMantissa).send(tx);
+    return this.contract.methods.acceptManager().send(tx);
   }
 
-  setLiquidationIncentive(
-    newLiquidationIncentive: number | string | BN,
+  addRewardsDistributor(
+    distributor: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setLiquidationIncentive(this.comptroller.address, newLiquidationIncentive).send(tx);
-  }
-
-  supportMarket(
-    cToken: string,
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.supportMarket(this.comptroller.address, cToken).send(tx);
+    return this.contract.methods.addRewardsDistributor(distributor).send(tx);
   }
 
   deployMarket(
-    isCEther: boolean,
-    constructorData: string | number[],
-    collateralFactorMantissa: number | string | BN,
+    deployData: [
+      string,
+      string,
+      string,
+      string,
+      string,
+      string | number[],
+      number | string | BN,
+      number | string | BN,
+      number | string | BN
+    ],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.deployMarket(this.comptroller.address, isCEther, constructorData, collateralFactorMantissa).send(tx);
+    return this.contract.methods.deployMarket(deployData).send(tx);
+  }
+
+  manager(): Promise<string> {
+    return this.contract.methods.manager().call();
+  }
+
+  pendingManager(): Promise<string> {
+    return this.contract.methods.pendingManager().call();
+  }
+
+  proposeNewManager(
+    newManager: string,
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.proposeNewManager(newManager).send(tx);
+  }
+
+  reduceReserves(
+    cToken: string,
+    reduceAmount: number | string | BN,
+    to: string,
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.reduceReserves(cToken, reduceAmount, to).send(tx);
+  }
+
+  setAdminFee(
+    cToken: string,
+    newAdminFeeMantissa: number | string | BN,
+    tx?: NonPayableTx,
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setAdminFee(cToken, newAdminFeeMantissa).send(tx);
   }
 
   setBorrowCaps(
@@ -60,22 +89,7 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     newBorrowCaps: (number | string | BN)[],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setBorrowCaps(this.comptroller.address, cTokens, newBorrowCaps).send(tx);
-  }
-
-  setSupplyCaps(
-    cTokens: string[],
-    newSupplyCaps: (number | string | BN)[],
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setSupplyCaps(this.comptroller.address, cTokens, newSupplyCaps).send(tx);
-  }
-
-  addRewardsDistributor(
-    distributor: string,
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.addRewardsDistributor(this.comptroller.address, distributor).send(tx);
+    return this.contract.methods.setBorrowCaps(cTokens, newBorrowCaps).send(tx);
   }
 
   setCTokenActionState(
@@ -84,7 +98,22 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     state: boolean,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setCTokenActionState(this.comptroller.address, cToken, action, state).send(tx);
+    return this.contract.methods.setCTokenActionState(cToken, action, state).send(tx);
+  }
+
+  setCloseFactor(
+    newCloseFactorMantissa: number | string | BN,
+    tx?: NonPayableTx,
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setCloseFactor(newCloseFactorMantissa).send(tx);
+  }
+
+  setCollateralFactor(
+    address: string,
+    newCollateralFactorMantissa: number | string | BN,
+    tx?: NonPayableTx,
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setCollateralFactor(address, newCollateralFactorMantissa).send(tx);
   }
 
   setGlobalActionState(
@@ -92,77 +121,102 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     state: boolean,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setGlobalActionState(this.comptroller.address, action, state).send(tx);
+    return this.contract.methods.setGlobalActionState(action, state).send(tx);
+  }
+
+  setIRM(
+    cToken: string,
+    newIRM: string,
+    tx?: NonPayableTx,
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setIRM(cToken, newIRM).send(tx);
+  }
+
+  setLiquidationIncentive(
+    newLiquidationIncentive: number | string | BN,
+    tx?: NonPayableTx,
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setLiquidationIncentive(newLiquidationIncentive).send(tx);
+  }
+
+  setNameAndSymbol(
+    cToken: string,
+    _name: string,
+    _symbol: string,
+    tx?: NonPayableTx,
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setNameAndSymbol(cToken, _name, _symbol).send(tx);
   }
 
   setPriceOracle(
     newOracle: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setPriceOracle(this.comptroller.address, newOracle).send(tx);
+    return this.contract.methods.setPriceOracle(newOracle).send(tx);
   }
 
-  // CToken mnethods
-
-  setAdminFee(
-    cToken: string,
-    newAdminFeeMantissa: number | string | BN,
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setAdminFee(this.comptroller.address, cToken, newAdminFeeMantissa).send(tx);
-  }
   setReserveFactor(
     cToken: string,
     newReserveFactorMantissa: number | string | BN,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setReserveFactor(this.comptroller.address, cToken, newReserveFactorMantissa).send(tx);
+    return this.contract.methods.setReserveFactor(cToken, newReserveFactorMantissa).send(tx);
   }
-  setIRM(
-    cToken: string,
-    newIRM: string,
+
+  setSupplyCaps(
+    cTokens: string[],
+    newSupplyCaps: (number | string | BN)[],
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setIRM(this.comptroller.address, cToken, newIRM).send(tx);
+    return this.contract.methods.setSupplyCaps(cTokens, newSupplyCaps).send(tx);
   }
-  setNameAndSymbol(
+
+  setWhitelistEnforcement(
+    enforce: boolean,
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setWhitelistEnforcement(enforce).send(tx);
+  }
+
+  setWhitelistStatuses(
+    suppliers: string[],
+    statuses: boolean[],
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.setWhitelistStatuses(suppliers, statuses).send(tx);
+  }
+
+  supportMarket(
     cToken: string,
-    name: string,
-    symbol: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.setNameAndSymbol(this.comptroller.address, cToken, name, symbol).send(tx);
+    return this.contract.methods.supportMarket(cToken).send(tx);
+  }
+
+  unsupportMarket(
+    cToken: string,
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.unsupportMarket(cToken).send(tx);
   }
 
   withdrawAdminFees(
     cToken: string,
     withdrawAmount: number | string | BN,
+    to: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.withdrawAdminFees(this.comptroller.address, cToken, withdrawAmount).send(tx);
+    return this.contract.methods.withdrawAdminFees(cToken, withdrawAmount, to).send(tx);
   }
 
-  reduceReserves(
-    cToken: string,
-    resuceAmmount: number | string | BN,
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.reduceReserves(this.comptroller.address, cToken, resuceAmmount).send(tx);
-  }
 
-  // Manager Functions
+  // Comptroller Methods
 
-  proposeNewManager(
-    newManager: string,
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.proposeNewManager(this.comptroller.address, newManager).send(tx);
-  }
-  acceptManager(
-    tx?: NonPayableTx,
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.acceptManager(this.comptroller.address).send(tx);
-  }
+
+
+
+  // CToken mnethods
+
 }
 
 export default MarketAdmin;
