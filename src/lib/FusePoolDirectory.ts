@@ -4,18 +4,11 @@ import BN from "bn.js";
 import MarketContract from "./MarketContract";
 import FusePoolDirectoryArtifact from "../abi/FusePoolDirectory.json";
 
-import { FusePoolDirectory as FusePoolDirectoryWeb3Interface } from "../types/FusePoolDirectory";
-import MarketSDK from "./MarketSDK";
 import { NonPayableTx } from "../types/types";
-import Comptroller from "./Comptroller";
+import { FusePoolDirectory as FusePoolDirectoryWeb3Interface } from "../types/FusePoolDirectory";
 
-export interface FusePool {
-  name: string;
-  creator: string;
-  comptroller: Comptroller;
-  blockPosted: BN;
-  timestampPosted: BN;
-};
+import MarketSDK from "./MarketSDK";
+import { FusePool, normalizeFusePool } from "./FusePool";
 
 class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
   constructor(sdk: MarketSDK, address: string){
@@ -74,7 +67,7 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     const pools: FusePool[] = [];
 
     for(const pool of poolsRaw){
-      pools.push(this.normalizeFusePool(pool));
+      pools.push(normalizeFusePool(pool, this.sdk));
     }
     return pools;
   }
@@ -97,7 +90,7 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     const pools: FusePool[] = [];
 
     for(const pool of poolsRaw){
-      pools.push(this.normalizeFusePool(pool));
+      pools.push(normalizeFusePool(pool, this.sdk));
     }
     for(const index of indexesRaw){
       indexes.push(new BN(index));
@@ -115,7 +108,7 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     const pools: FusePool[] = [];
 
     for(const pool of poolsRaw){
-      pools.push(this.normalizeFusePool(pool));
+      pools.push(normalizeFusePool(pool, this.sdk));
     }
     for(const index of indexesRaw){
       indexes.push(new BN(index));
@@ -145,7 +138,7 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     arg0: number | string | BN
   ): Promise<FusePool> {
     const poolRaw = await this.contract.methods.pools(arg0).call();
-    return this.normalizeFusePool(poolRaw);
+    return normalizeFusePool(poolRaw, this.sdk);
   }
 
   registerPool(
@@ -175,22 +168,6 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.transferOwnership(newOwner).send(tx);
-  }
-
-  private normalizeFusePool(raw: {
-    0: string;
-    1: string;
-    2: string;
-    3: string;
-    4: string;
-  }): FusePool {
-    return {
-      name: raw[0],
-      creator: raw[1],
-      comptroller: new Comptroller(this.sdk, raw[2]),
-      blockPosted: new BN(raw[3]),
-      timestampPosted: new BN(raw[4]),
-    };
   }
 }
 
