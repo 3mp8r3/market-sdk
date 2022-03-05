@@ -6,16 +6,24 @@ import MarketContract from "./MarketContract";
 import { FusePoolLens as FusePoolLensV1Web3Interface } from "../types/FusePoolLens";
 import FusePoolLensV1Artifact from "../abi/FusePoolLens.json";
 
+import { FusePoolLensV2 as FusePoolLensV2Web3Interface } from "../types/FusePoolLensV2";
+import FusePoolLensV2Artifact from "../abi/FusePoolLensV2.json";
+
 import Comptroller from "./Comptroller";
 import CToken from "./CToken";
-import { FusePool, FusePoolAsset, FusePoolUser, normalizeFusePool, normalizeFusePoolAsset, normalizeFusePoolUser } from "./FusePool";
+import FusePoolDirectory from "./FusePoolDirectory";
 
-export interface CTokenOwnership {
-  cToken: CToken;
-  admin: string;
-  admingHasRights: boolean;
-  fuseAdminHasRights: boolean;
-}
+import {
+  FusePool,
+  FusePoolAsset,
+  FusePoolUser,
+  CTokenOwnership,
+  normalizeFusePool,
+  normalizeFusePoolAsset,
+  normalizeFusePoolUser,
+  normalizeCTokenOwnership,
+  serializeFusePool
+} from "./FusePool";
 
 class FusePoolLensV1 extends MarketContract<FusePoolLensV1Web3Interface> {
   readonly comptroller: Comptroller;
@@ -31,7 +39,6 @@ class FusePoolLensV1 extends MarketContract<FusePoolLensV1Web3Interface> {
 
   async getPoolAssetsWithData(): Promise<FusePoolAsset[]> {
     const assetsRaw = await this.contract.methods.getPoolAssetsWithData(this.comptroller.address).call();
-
     const assets: FusePoolAsset[] = [];
 
     for(const asset of assetsRaw){
@@ -48,7 +55,6 @@ class FusePoolLensV1 extends MarketContract<FusePoolLensV1Web3Interface> {
   }> {
     const raw = await this.contract.methods.getPoolOwnership(this.comptroller.address).call();
     const outlinersRaw = raw[3];
-
     const outliners: CTokenOwnership[] = [];
 
     for(const outliner of outlinersRaw){
@@ -243,8 +249,122 @@ class FusePoolLensV1 extends MarketContract<FusePoolLensV1Web3Interface> {
   }
 }
 
-class FusePoolLensV2 {
+class FusePoolLensV2 extends MarketContract<FusePoolLensV2Web3Interface> {
+  readonly comptroller: Comptroller;
 
+  constructor(sdk: MarketSDK, comptroller: Comptroller | string, address: string) {
+    super(sdk, address, FusePoolLensV1Artifact.abi);
+
+    if(!(comptroller instanceof Comptroller)){
+      comptroller = new Comptroller(sdk, comptroller)
+    }
+    this.comptroller = comptroller;
+  }
+
+  async directory(): Promise<FusePoolDirectory> {
+    const diirectoryAddress = await this.contract.methods.directory().call();
+
+    return new FusePoolDirectory(this.sdk, diirectoryAddress);
+  }
+
+  async getPoolOwnership(): Promise<{
+    comptrollerAdmin: string,
+    comptrollerAdminHasRights: boolean,
+    comptrollerFuseAdminHasRights: boolean,
+    outliners: CTokenOwnership[]
+  }> {
+    const raw = await this.contract.methods.getPoolOwnership(this.comptroller.address).call();
+
+    return {
+      comptrollerAdmin: raw[0],
+      comptrollerAdminHasRights: raw[1],
+      comptrollerFuseAdminHasRights: raw[2],
+      outliners: raw[3].map(el => normalizeCTokenOwnership(el, this.comptroller))
+    };
+  }
+
+  async getPoolSummary(): Promise<{
+    totalSupply: BN,
+    totalBorrow: BN,
+    underlyingTokens: string[],
+    underlyingSymbols: string[],
+  }> {
+    const raw = await this.contract.methods.getPoolSummary(this.comptroller.address).call();
+
+    return {
+      totalSupply: new BN(raw[0]),
+      totalBorrow: new BN(raw[1]),
+      underlyingTokens: raw[2],
+      underlyingSymbols: raw[3],
+    };
+  }
+
+  async getPoolsWithData(
+    indexes: (number | string | BN)[],
+    pools: FusePool[]
+  ): Promise<{
+    indexes: BN[];
+    pools: FusePool[];
+    totalSupply: BN[];
+    totalBorrow: BN[];
+    underlyingTokens: string[][];
+    underlyingSymbols: string[][];
+    errored: boolean[];
+  }> {
+    const poolsSerialized: [
+      string,
+      string,
+      string,
+      number | string | BN,
+      number | string | BN
+    ][] = pools.map(serializeFusePool);
+
+    const raw = await this.contract.methods.getPoolsWithData(indexes, poolsSerialized).call();
+
+    return {
+      indexes: raw[0].map(el => new BN(el)),
+      pools: raw[1].map(el => normalizeFusePool(el, this.comptroller.sdk)),
+      totalSupply: raw[2].map(el => new BN(el)),
+      totalBorrow: raw[3].map(el => new BN(el)),
+      underlyingTokens: raw[4],
+      underlyingSymbols: raw[5],
+      errored: raw[6]
+    };
+  }
+
+  async getPublicPoolsWithData(): Promise<{
+    indexes: BN[];
+    pools: FusePool[];
+    totalSupply: BN[];
+    totalBorrow: BN[];
+    underlyingTokens: string[][];
+    underlyingSymbols: string[][];
+    errored: boolean[];
+  }> {
+    const raw = await this.contract.methods.getPublicPoolsWithData().call();
+
+    return {
+      indexes: raw[0].map(el => new BN(el)),
+      pools: raw[1].map(el => normalizeFusePool(el, this.comptroller.sdk)),
+      totalSupply: raw[2].map(el => new BN(el)),
+      totalBorrow: raw[3].map(el => new BN(el)),
+      underlyingTokens: raw[4],
+      underlyingSymbols: raw[5],
+      errored: raw[6]
+    };
+  }
+
+  async getWhitelistedPoolsByAccount(account: string): Promise<{
+    indexes: BN[],
+    accountPools: FusePool[]
+  }> {
+    const raw = await this.contract.methods.getWhitelistedPoolsByAccount(account).call();
+
+    return {
+      indexes: raw[0].map(el => new BN(el)),
+      accountPools: raw[1].map(el => normalizeFusePool(el, this.comptroller.sdk))
+    };
+  }
 }
 
 export { FusePoolLensV1, FusePoolLensV2 };

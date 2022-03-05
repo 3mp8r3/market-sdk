@@ -27,6 +27,22 @@ export function normalizeFusePool(raw: {
   };
 }
 
+export function serializeFusePool(pool: FusePool): [
+  string,
+  string,
+  string,
+  number | string | BN,
+  number | string | BN
+] {
+  return [
+    pool.name,
+    pool.creator,
+    pool.comptroller.address,
+    pool.blockPosted,
+    pool.timestampPosted
+  ];
+}
+
 export interface FusePoolAsset {
   cToken: CToken;
   underlyingToken: string;
@@ -142,5 +158,26 @@ export function normalizeFusePoolUser(raw: {
     totalCollateral: new BN(raw[2]),
     health: new BN(raw[3]),
     assets: raw[4].map(asset => normalizeFusePoolAsset(asset, comptroller))
+  };
+}
+
+export interface CTokenOwnership {
+  cToken: CToken;
+  admin: string;
+  admingHasRights: boolean;
+  fuseAdminHasRights: boolean;
+}
+
+export function normalizeCTokenOwnership(raw: {
+  0: string;
+  1: string;
+  2: boolean;
+  3: boolean;
+}, comptroller: Comptroller): CTokenOwnership {
+  return {
+    cToken: new CToken(comptroller, raw[0]),
+    admin: raw[1],
+    admingHasRights: raw[2],
+    fuseAdminHasRights: raw[3],
   };
 }
