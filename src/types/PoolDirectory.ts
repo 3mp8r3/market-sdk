@@ -40,13 +40,13 @@ export type PoolRegistered = ContractEventLog<{
   1: [string, string, string, string, string];
 }>;
 
-export interface FusePoolDirectory extends BaseContract {
+export interface PoolDirectory extends BaseContract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
-  ): FusePoolDirectory;
-  clone(): FusePoolDirectory;
+  ): PoolDirectory;
+  clone(): PoolDirectory;
   methods: {
     _setDeployerWhitelistEnforcement(
       _enforceDeployerWhitelist: boolean

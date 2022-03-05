@@ -3,7 +3,7 @@ import Comptroller from "./Comptroller";
 import CToken from "./CToken";
 import MarketSDK from "./MarketSDK";
 
-export interface FusePool {
+export interface Pool {
   name: string;
   creator: string;
   comptroller: Comptroller;
@@ -11,13 +11,13 @@ export interface FusePool {
   timestampPosted: BN;
 };
 
-export function normalizeFusePool(raw: {
+export function normalizePool(raw: {
   0: string;
   1: string;
   2: string;
   3: string;
   4: string;
-}, sdk: MarketSDK): FusePool {
+}, sdk: MarketSDK): Pool {
   return {
     name: raw[0],
     creator: raw[1],
@@ -27,7 +27,7 @@ export function normalizeFusePool(raw: {
   };
 }
 
-export function serializeFusePool(pool: FusePool): [
+export function serializePool(pool: Pool): [
   string,
   string,
   string,
@@ -43,7 +43,7 @@ export function serializeFusePool(pool: FusePool): [
   ];
 }
 
-export interface FusePoolAsset {
+export interface PoolAsset {
   cToken: CToken;
   underlyingToken: string;
   underlyingName: string;
@@ -67,7 +67,7 @@ export interface FusePoolAsset {
   fuseFee: BN;
 }
 
-export function normalizeFusePoolAsset(raw: {
+export function normalizePoolAsset(raw: {
   0: string;
   1: string;
   2: string;
@@ -89,7 +89,7 @@ export function normalizeFusePoolAsset(raw: {
   18: string;
   19: string;
   20: string;
-}, comptroller: Comptroller): FusePoolAsset {
+}, comptroller: Comptroller): PoolAsset {
   return {
     cToken: new CToken(comptroller, raw[0]),
     underlyingToken: raw[1],
@@ -115,15 +115,15 @@ export function normalizeFusePoolAsset(raw: {
   }
 }
 
-export interface FusePoolUser {
+export interface PoolUser {
   account: string;
   totalBorrow: BN;
   totalCollateral: BN;
   health: BN;
-  assets: FusePoolAsset[];
+  assets: PoolAsset[];
 }
 
-export function normalizeFusePoolUser(raw: {
+export function normalizePoolUser(raw: {
   0: string;
   1: string;
   2: string;
@@ -151,13 +151,13 @@ export function normalizeFusePoolUser(raw: {
     19: string;
     20: string;
   }[]
-}, comptroller: Comptroller): FusePoolUser {
+}, comptroller: Comptroller): PoolUser {
   return {
     account: raw[0],
     totalBorrow: new BN(raw[1]),
     totalCollateral: new BN(raw[2]),
     health: new BN(raw[3]),
-    assets: raw[4].map(asset => normalizeFusePoolAsset(asset, comptroller))
+    assets: raw[4].map(asset => normalizePoolAsset(asset, comptroller))
   };
 }
 

@@ -2,17 +2,17 @@ import { PromiEvent, TransactionReceipt } from "web3-core";
 import BN from "bn.js";
 
 import MarketContract from "./MarketContract";
-import FusePoolDirectoryArtifact from "../abi/FusePoolDirectory.json";
+import PoolDirectoryArtifact from "../abi/PoolDirectory.json";
 
 import { NonPayableTx } from "../types/types";
-import { FusePoolDirectory as FusePoolDirectoryWeb3Interface } from "../types/FusePoolDirectory";
+import { PoolDirectory as PoolDirectoryWeb3Interface } from "../types/PoolDirectory";
 
 import MarketSDK from "./MarketSDK";
-import { FusePool, normalizeFusePool } from "./FusePool";
+import { Pool, normalizePool } from "./Pool";
 
-class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
+class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
   constructor(sdk: MarketSDK, address: string){
-    super(sdk, address, FusePoolDirectoryArtifact.abi);
+    super(sdk, address, PoolDirectoryArtifact.abi);
   }
 
   _setDeployerWhitelistEnforcement(
@@ -62,12 +62,12 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     return this.contract.methods.enforceDeployerWhitelist().send(tx);
   }
 
-  async getAllPools(): Promise<FusePool[]> {
+  async getAllPools(): Promise<Pool[]> {
     const poolsRaw = await this.contract.methods.getAllPools().call();
-    const pools: FusePool[] = [];
+    const pools: Pool[] = [];
 
     for(const pool of poolsRaw){
-      pools.push(normalizeFusePool(pool, this.sdk));
+      pools.push(normalizePool(pool, this.sdk));
     }
     return pools;
   }
@@ -82,15 +82,15 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
     account: string
   ): Promise<{
     indexes: BN[];
-    pools: FusePool[];
+    pools: Pool[];
   }> {
     const { 0: indexesRaw, 1: poolsRaw } = await this.contract.methods.getPoolsByAccount(account).call();
 
     const indexes: BN[] = [];
-    const pools: FusePool[] = [];
+    const pools: Pool[] = [];
 
     for(const pool of poolsRaw){
-      pools.push(normalizeFusePool(pool, this.sdk));
+      pools.push(normalizePool(pool, this.sdk));
     }
     for(const index of indexesRaw){
       indexes.push(new BN(index));
@@ -100,15 +100,15 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
 
   async getPublicPools(): Promise<{
     indexes: BN[];
-    pools: FusePool[];
+    pools: Pool[];
   }> {
     const { 0: indexesRaw, 1: poolsRaw } = await this.contract.methods.getPublicPools().call();
 
     const indexes: BN[] = [];
-    const pools: FusePool[] = [];
+    const pools: Pool[] = [];
 
     for(const pool of poolsRaw){
-      pools.push(normalizeFusePool(pool, this.sdk));
+      pools.push(normalizePool(pool, this.sdk));
     }
     for(const index of indexesRaw){
       indexes.push(new BN(index));
@@ -136,9 +136,9 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
 
   async pools(
     arg0: number | string | BN
-  ): Promise<FusePool> {
+  ): Promise<Pool> {
     const poolRaw = await this.contract.methods.pools(arg0).call();
-    return normalizeFusePool(poolRaw, this.sdk);
+    return normalizePool(poolRaw, this.sdk);
   }
 
   registerPool(
@@ -171,4 +171,4 @@ class FusePoolDirectory extends MarketContract<FusePoolDirectoryWeb3Interface> {
   }
 }
 
-export default FusePoolDirectory;
+export default PoolDirectory;

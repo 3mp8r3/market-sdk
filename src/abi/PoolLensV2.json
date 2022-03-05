@@ -1,7 +1,5 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "FusePoolLensV2",
-  "sourceName": "contracts/FusePoolLensV2.sol",
   "abi": [
     {
       "inputs": [

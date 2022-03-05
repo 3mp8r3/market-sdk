@@ -2,16 +2,16 @@ import MarketContract from "./lib/MarketContract";
 import MarketAdmin from "./lib/MarketAdmin";
 import Comptroller from "./lib/Comptroller";
 import CToken from "./lib/CToken";
-import FusePoolDirectory from "./lib/FusePoolDirectory";
+import PoolDirectory from "./lib/PoolDirectory";
 import MarketSDK from "./lib/MarketSDK";
 
-export * from "./lib/FusePool";
-export * from "./lib/FusePoolLens";
+export * from "./lib/Pool";
+export * from "./lib/PoolLens";
 
 export {
   Comptroller,
   CToken,
-  FusePoolDirectory,
+  PoolDirectory,
   MarketAdmin,
   MarketContract,
   MarketSDK,
