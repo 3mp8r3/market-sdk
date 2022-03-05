@@ -8,7 +8,6 @@ import { CToken as CTokenWeb3Interface } from "../types/CToken";
 import { NonPayableTx } from "../types/types";
 
 import Comptroller from "./Comptroller";
-import MarketAdmin from "./MarketAdmin";
 
 class CToken extends MarketContract<CTokenWeb3Interface> {
   readonly comptroller: Comptroller;
@@ -71,10 +70,10 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
   }
 
   _setPendingAdmin(
-    newPendingAdmin: MarketAdmin,
+    newPendingAdmin: string,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods._setPendingAdmin(newPendingAdmin.address).send(tx);
+    return this.contract.methods._setPendingAdmin(newPendingAdmin).send(tx);
   }
 
   _setReserveFactor(
@@ -106,8 +105,8 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.accrueInterest().call();
   }
 
-  async admin(): Promise<MarketAdmin> {
-    return new MarketAdmin(this.comptroller, await this.contract.methods.admin().call());
+  admin(): Promise<string> {
+    return this.contract.methods.admin().call();
   }
 
   adminFeeMantissa(): Promise<string> {

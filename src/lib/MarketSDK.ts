@@ -29,7 +29,7 @@ class MarketSDK {
 
   async init(){
     this.comptroller = new Comptroller(this, this.comptrollerAddress);
-    this.admin = await this.comptroller.admin();
+    this.admin = new MarketAdmin(this.comptroller, await this.comptroller.admin());
   }
 
   setCollateralFactor(

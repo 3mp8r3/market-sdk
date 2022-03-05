@@ -7,7 +7,6 @@ import ComptrollerArtifact from "../abi/Comptroller.json";
 import { Comptroller as ComptrollerWeb3Interface } from "../types/Comptroller";
 import { NonPayableTx } from "../types/types";
 
-import MarketAdmin from "./MarketAdmin";
 import MarketSDK from "./MarketSDK";
 
 class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
@@ -147,8 +146,8 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.accountAssets(arg0, arg1).call();
   }
 
-  async admin(): Promise<MarketAdmin> {
-    return new MarketAdmin(this, await this.contract.methods.admin().call());
+  admin(): Promise<string> {
+    return this.contract.methods.admin().call();
   }
 
   adminHasRights(): Promise<boolean> {
