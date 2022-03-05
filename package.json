@@ -5,6 +5,7 @@
   "author": "Apoorv <apoorvsingal0@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "prepare": "tsc",
     "generate-types": "typechain --target=web3-v1 'src/abi/*.json' --out-dir src/types",
     "postinstall": "yarn generate-types"
   },
