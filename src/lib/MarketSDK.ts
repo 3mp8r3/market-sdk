@@ -7,6 +7,9 @@ import { NonPayableTx } from "../types/types";
 import Comptroller from "./Comptroller";
 import MarketAdmin from "./MarketAdmin";
 import CToken from "./CToken";
+import { PoolLensV1, PoolLensV2 } from "./PoolLens";
+
+import Addrs from "../constants/addrs";
 
 class MarketSDK {
   readonly apiURL: string = "https://sls.market.xyz/";
@@ -15,6 +18,11 @@ class MarketSDK {
 
   admin?: MarketAdmin;
   comptroller?: Comptroller;
+
+  lens: {
+    v1?: PoolLensV1,
+    v2?: PoolLensV2
+  } = {};
 
   constructor(comptrollerAddress: string, web3: Web3){
     this.comptrollerAddress = comptrollerAddress;
@@ -30,6 +38,11 @@ class MarketSDK {
   async init(){
     this.comptroller = new Comptroller(this, this.comptrollerAddress);
     this.admin = new MarketAdmin(this.comptroller, await this.comptroller.admin());
+
+    const chainId = await this.web3.eth.getChainId();
+    const lensV1Address = Addrs[chainId as keyof typeof Addrs]?.FUSE_POOL_LENS_CONTRACT_ADDRESS;
+
+    this.lens.v1 = new PoolLensV1(this, this.comptroller, lensV1Address);
   }
 
   setCollateralFactor(
@@ -53,16 +66,18 @@ class MarketSDK {
     return res;
   }
 
-  getAllPools(format: boolean = false){
-    return this._getAPIReq(`getAllPools?format=${format ? 1 : 0}`);
+  getAllPools(){
+    this.checkInit();
+    return this.lens.v1!.getPublicPoolsWithData();
   }
 
-  getPoolsByOwner(owner: string, format: boolean = false){
-    return this._getAPIReq(`getPoolsByOwner?owner=${owner}&format=${format ? 1 : 0}`);
+  getPoolsByOwner(owner: string){
+    return this._getAPIReq(`getPoolsByOwner?owner=${owner}`);
   }
 
-  getPoolAssetsWithData(from: string){
-    return this._getAPIReq(`getPoolAssetsWithData?address=${from}&comptroller=${this.comptrollerAddress}`);
+  getPoolAssetsWithData(){
+    this.checkInit();
+    return this.lens.v1!.getPoolAssetsWithData();
   }
 
   private async _getAPIReq(endpoint: string){
