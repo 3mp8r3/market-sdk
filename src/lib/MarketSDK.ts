@@ -13,7 +13,6 @@ import Addrs from "../constants/addrs";
 
 class MarketSDK {
   readonly apiURL: string = "https://sls.market.xyz/";
-  readonly comptrollerAddress: string;
   readonly web3: Web3;
 
   poolDirectory?: PoolDirectory;
@@ -22,8 +21,7 @@ class MarketSDK {
     v2?: PoolLensV2
   } = {};
 
-  constructor(comptrollerAddress: string, web3: Web3){
-    this.comptrollerAddress = comptrollerAddress;
+  constructor(web3: Web3){
     this.web3 = web3;
   }
 
