@@ -7,13 +7,11 @@ import MarketAdminArtifact from "../abi/MarketAdmin.json";
 import { MarketAdmin as MarketAdminWeb3Interface } from "../types/MarketAdmin";
 import { NonPayableTx } from "../types/types";
 import Comptroller from "./Comptroller";
+import MarketSDK from "./MarketSDK";
 
 class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
-  readonly comptroller: Comptroller;
-
-  constructor(comptroller: Comptroller, address: string){
-    super(comptroller.sdk, address, MarketAdminArtifact.abi);
-    this.comptroller = comptroller;
+  constructor(sdk: MarketSDK, address: string){
+    super(sdk, address, MarketAdminArtifact.abi);
   }
 
   acceptAdmin(
@@ -22,17 +20,16 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     return this.contract.methods.acceptAdmin().send(tx);
   }
 
-  acceptManager(
-    tx?: NonPayableTx
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.acceptManager().send(tx);
-  }
-
   addRewardsDistributor(
     distributor: string,
     tx?: NonPayableTx,
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.addRewardsDistributor(distributor).send(tx);
+  }
+
+  async comptroller(): Promise<Comptroller> {
+    const address = await this.contract.methods.comptroller().call();
+    return new Comptroller(this.sdk, address);
   }
 
   deployMarket(
@@ -52,19 +49,16 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     return this.contract.methods.deployMarket(deployData).send(tx);
   }
 
-  manager(): Promise<string> {
-    return this.contract.methods.manager().call();
+  async isMarketAdmin(): Promise<boolean> {
+    try {
+      return await this.contract.methods.isMarketAdmin().call();
+    } catch(e){
+      return false;
+    }
   }
 
-  pendingManager(): Promise<string> {
-    return this.contract.methods.pendingManager().call();
-  }
-
-  proposeNewManager(
-    newManager: string,
-    tx?: NonPayableTx
-  ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.proposeNewManager(newManager).send(tx);
+  owner(): Promise<string> {
+    return this.contract.methods.owner().call();
   }
 
   reduceReserves(
@@ -74,6 +68,12 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.reduceReserves(cToken, reduceAmount, to).send(tx);
+  }
+
+  renounceOwnership(
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.renounceOwnership().send(tx);
   }
 
   setAdminFee(
@@ -193,6 +193,13 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     return this.contract.methods.supportMarket(cToken).send(tx);
   }
 
+  transferOwnership(
+    newOwner: string,
+    tx?: NonPayableTx
+  ): PromiEvent<TransactionReceipt> {
+    return this.contract.methods.transferOwnership(newOwner).send(tx);
+  }
+
   unsupportMarket(
     cToken: string,
     tx?: NonPayableTx
@@ -208,15 +215,6 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods.withdrawAdminFees(cToken, withdrawAmount, to).send(tx);
   }
-
-
-  // Comptroller Methods
-
-
-
-
-  // CToken mnethods
-
 }
 
 export default MarketAdmin;

@@ -1,7 +1,5 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "MarketAdmin",
-  "sourceName": "contracts/MarketAdmin.sol",
   "abi": [
     {
       "inputs": [
@@ -68,17 +66,6 @@
       "type": "error"
     },
     {
-      "inputs": [
-        {
-          "internalType": "enum MarketAdmin.AuthUserType",
-          "name": "authUser",
-          "type": "uint8"
-        }
-      ],
-      "name": "Unauthorized",
-      "type": "error"
-    },
-    {
       "inputs": [],
       "name": "ZeroAddressProvided",
       "type": "error"
@@ -87,69 +74,24 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
-          "name": "oldManager",
+          "name": "previousOwner",
           "type": "address"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
-          "name": "newManager",
+          "name": "newOwner",
           "type": "address"
         }
       ],
-      "name": "AcceptManager",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "comptroller",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "manager",
-          "type": "address"
-        }
-      ],
-      "name": "ManagerInitialized",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "comptroller",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "newPendingManager",
-          "type": "address"
-        }
-      ],
-      "name": "SetPendingManager",
+      "name": "OwnershipTransferred",
       "type": "event"
     },
     {
       "inputs": [],
       "name": "acceptAdmin",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "acceptManager",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -242,20 +184,20 @@
     },
     {
       "inputs": [],
-      "name": "manager",
+      "name": "isMarketAdmin",
       "outputs": [
         {
-          "internalType": "address",
+          "internalType": "bool",
           "name": "",
-          "type": "address"
+          "type": "bool"
         }
       ],
-      "stateMutability": "view",
+      "stateMutability": "pure",
       "type": "function"
     },
     {
       "inputs": [],
-      "name": "pendingManager",
+      "name": "owner",
       "outputs": [
         {
           "internalType": "address",
@@ -264,19 +206,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newManager",
-          "type": "address"
-        }
-      ],
-      "name": "proposeNewManager",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -298,6 +227,13 @@
         }
       ],
       "name": "reduceReserves",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -553,6 +489,19 @@
         }
       ],
       "name": "supportMarket",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

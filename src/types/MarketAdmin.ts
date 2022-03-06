@@ -21,21 +21,9 @@ export interface EventOptions {
   topics?: string[];
 }
 
-export type AcceptManager = ContractEventLog<{
-  oldManager: string;
-  newManager: string;
-  0: string;
-  1: string;
-}>;
-export type ManagerInitialized = ContractEventLog<{
-  comptroller: string;
-  manager: string;
-  0: string;
-  1: string;
-}>;
-export type SetPendingManager = ContractEventLog<{
-  comptroller: string;
-  newPendingManager: string;
+export type OwnershipTransferred = ContractEventLog<{
+  previousOwner: string;
+  newOwner: string;
   0: string;
   1: string;
 }>;
@@ -49,8 +37,6 @@ export interface MarketAdmin extends BaseContract {
   clone(): MarketAdmin;
   methods: {
     acceptAdmin(): NonPayableTransactionObject<void>;
-
-    acceptManager(): NonPayableTransactionObject<void>;
 
     addRewardsDistributor(
       distributor: string
@@ -72,17 +58,17 @@ export interface MarketAdmin extends BaseContract {
       ]
     ): NonPayableTransactionObject<void>;
 
-    manager(): NonPayableTransactionObject<string>;
+    isMarketAdmin(): NonPayableTransactionObject<boolean>;
 
-    pendingManager(): NonPayableTransactionObject<string>;
-
-    proposeNewManager(newManager: string): NonPayableTransactionObject<void>;
+    owner(): NonPayableTransactionObject<string>;
 
     reduceReserves(
       cToken: string,
       reduceAmount: number | string | BN,
       to: string
     ): NonPayableTransactionObject<void>;
+
+    renounceOwnership(): NonPayableTransactionObject<void>;
 
     setAdminFee(
       cToken: string,
@@ -149,6 +135,8 @@ export interface MarketAdmin extends BaseContract {
 
     supportMarket(cToken: string): NonPayableTransactionObject<void>;
 
+    transferOwnership(newOwner: string): NonPayableTransactionObject<void>;
+
     unsupportMarket(cToken: string): NonPayableTransactionObject<void>;
 
     withdrawAdminFees(
@@ -158,45 +146,19 @@ export interface MarketAdmin extends BaseContract {
     ): NonPayableTransactionObject<void>;
   };
   events: {
-    AcceptManager(cb?: Callback<AcceptManager>): EventEmitter;
-    AcceptManager(
+    OwnershipTransferred(cb?: Callback<OwnershipTransferred>): EventEmitter;
+    OwnershipTransferred(
       options?: EventOptions,
-      cb?: Callback<AcceptManager>
-    ): EventEmitter;
-
-    ManagerInitialized(cb?: Callback<ManagerInitialized>): EventEmitter;
-    ManagerInitialized(
-      options?: EventOptions,
-      cb?: Callback<ManagerInitialized>
-    ): EventEmitter;
-
-    SetPendingManager(cb?: Callback<SetPendingManager>): EventEmitter;
-    SetPendingManager(
-      options?: EventOptions,
-      cb?: Callback<SetPendingManager>
+      cb?: Callback<OwnershipTransferred>
     ): EventEmitter;
 
     allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
   };
 
-  once(event: "AcceptManager", cb: Callback<AcceptManager>): void;
+  once(event: "OwnershipTransferred", cb: Callback<OwnershipTransferred>): void;
   once(
-    event: "AcceptManager",
+    event: "OwnershipTransferred",
     options: EventOptions,
-    cb: Callback<AcceptManager>
-  ): void;
-
-  once(event: "ManagerInitialized", cb: Callback<ManagerInitialized>): void;
-  once(
-    event: "ManagerInitialized",
-    options: EventOptions,
-    cb: Callback<ManagerInitialized>
-  ): void;
-
-  once(event: "SetPendingManager", cb: Callback<SetPendingManager>): void;
-  once(
-    event: "SetPendingManager",
-    options: EventOptions,
-    cb: Callback<SetPendingManager>
+    cb: Callback<OwnershipTransferred>
   ): void;
 }

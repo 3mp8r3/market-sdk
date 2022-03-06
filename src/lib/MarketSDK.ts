@@ -37,7 +37,7 @@ class MarketSDK {
 
   async init(){
     this.comptroller = new Comptroller(this, this.comptrollerAddress);
-    this.admin = new MarketAdmin(this.comptroller, await this.comptroller.admin());
+    this.admin = new MarketAdmin(this, await this.comptroller.admin());
 
     const chainId = await this.web3.eth.getChainId();
     const lensV1Address = Addrs[chainId as keyof typeof Addrs]?.FUSE_POOL_LENS_CONTRACT_ADDRESS;
@@ -87,6 +87,10 @@ class MarketSDK {
       throw new Error(`API request failed with status ${res.status}`);
     }
     return await res.json();
+  }
+
+  isMarketAdmin(address: string): Promise<boolean> {
+    return new MarketAdmin(this, address).isMarketAdmin();
   }
 }
 
