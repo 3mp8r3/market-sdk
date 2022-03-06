@@ -89,9 +89,9 @@ export function normalizePoolAsset(raw: {
   18: string;
   19: string;
   20: string;
-}, comptroller: Comptroller): PoolAsset {
+}, sdk: MarketSDK): PoolAsset {
   return {
-    cToken: new CToken(comptroller, raw[0]),
+    cToken: new CToken(sdk, raw[0]),
     underlyingToken: raw[1],
     underlyingName: raw[2],
     underlyingSymbol: raw[3],
@@ -151,13 +151,13 @@ export function normalizePoolUser(raw: {
     19: string;
     20: string;
   }[]
-}, comptroller: Comptroller): PoolUser {
+}, sdk: MarketSDK): PoolUser {
   return {
     account: raw[0],
     totalBorrow: new BN(raw[1]),
     totalCollateral: new BN(raw[2]),
     health: new BN(raw[3]),
-    assets: raw[4].map(asset => normalizePoolAsset(asset, comptroller))
+    assets: raw[4].map(asset => normalizePoolAsset(asset, sdk))
   };
 }
 
@@ -173,9 +173,9 @@ export function normalizeCTokenOwnership(raw: {
   1: string;
   2: boolean;
   3: boolean;
-}, comptroller: Comptroller): CTokenOwnership {
+}, sdk: MarketSDK): CTokenOwnership {
   return {
-    cToken: new CToken(comptroller, raw[0]),
+    cToken: new CToken(sdk, raw[0]),
     admin: raw[1],
     admingHasRights: raw[2],
     fuseAdminHasRights: raw[3],
