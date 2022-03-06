@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import BN from "bn.js";
+import fetch from "isomorphic-unfetch";
 
 import Comptroller from "./Comptroller";
 import MarketAdmin from "./MarketAdmin";
