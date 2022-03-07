@@ -1,6 +1,7 @@
 import { PromiEvent, TransactionReceipt } from "web3-core";
 import BN from "bn.js";
 
+import CToken from "./CToken";
 import MarketContract from "./MarketContract";
 import ComptrollerArtifact from "../abi/Comptroller.json";
 
@@ -30,10 +31,11 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   _setBorrowPaused(
-    cToken: string, 
+    cToken: CToken | string, 
     state: boolean, 
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods._setBorrowPaused(cToken, state).send(tx);
   }
 
@@ -45,10 +47,11 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   _setCollateralFactor(
-    cToken: string,
+    cToken: CToken | string,
     newCollateralFactorMantissa: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods._setCollateralFactor(cToken, newCollateralFactorMantissa).send(tx);
   }
 
@@ -67,10 +70,11 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   _setMintPaused(
-    cToken: string,
+    cToken: CToken | string,
     state: boolean,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods._setMintPaused(cToken, state).send(tx);
   }
 
@@ -118,24 +122,27 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   _supportMarket(
-    cToken: string,
+    cToken: CToken | string,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods._supportMarket(cToken).send(tx);
   }
 
   _supportMarketAndSetCollateralFactor(
-    cToken: string,
+    cToken: CToken | string,
     newCollateralFactorMantissa: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods._supportMarketAndSetCollateralFactor(cToken, newCollateralFactorMantissa).send(tx);
   }
 
   _unsupportMarket(
-    cToken: string,
+    cToken: CToken | string,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods._unsupportMarket(cToken).send(tx);
   }
 
@@ -168,11 +175,12 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   borrowAllowed(
-    cToken: string,
+    cToken: CToken | string,
     borrower: string,
     borrowAmount: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.borrowAllowed(cToken, borrower, borrowAmount).send(tx);
   }
 
@@ -183,19 +191,21 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   borrowVerify(
-    cToken: string,
+    cToken: CToken | string,
     borrower: string,
     borrowAmount: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.borrowVerify(cToken, borrower, borrowAmount).send(tx);
   }
 
   borrowWithinLimits(
-    cToken: string,
+    cToken: CToken | string,
     accountBorrowsNew: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.borrowWithinLimits(cToken, accountBorrowsNew).send(tx);
   }
 
@@ -207,8 +217,9 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
 
   checkMembership(
     account: string,
-    cToken: string,
+    cToken: CToken | string,
   ): Promise<boolean> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.checkMembership(account, cToken).call();
   }
 
@@ -225,10 +236,11 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   enterMarkets(
-    cTokens: string[],
+    cTokens: (CToken | string)[],
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.enterMarkets(cTokens).send(tx);
+    cTokens = cTokens.map(cToken => cToken instanceof CToken ? cToken.address : cToken);
+    return this.contract.methods.enterMarkets(<string[]>cTokens).send(tx);
   }
 
   exitMarket(
@@ -268,7 +280,7 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
 
   getHypotheticalAccountLiquidity(
     account: string,
-    cTokenModify: string,
+    cTokenModify: CToken | string,
     redeemTokens: number | string | BN,
     borrowAmount: number | string | BN,
   ): Promise<{
@@ -276,22 +288,25 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     1: string;
     2: string;
   }> {
+    cTokenModify = cTokenModify instanceof CToken ? cTokenModify.address : cTokenModify;
     return this.contract.methods.getHypotheticalAccountLiquidity(account, cTokenModify, redeemTokens, borrowAmount).call();
   }
 
   getMaxBorrow(
     account: string,
-    cTokenModify: string,
+    cTokenModify: CToken | string,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cTokenModify = cTokenModify instanceof CToken ? cTokenModify.address : cTokenModify;
     return this.contract.methods.getMaxBorrow(account, cTokenModify).send(tx);
   }
 
   getMaxRedeem(
-    account: string, 
-    cTokenModify: string,
+    account: string,
+    cTokenModify: CToken | string,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cTokenModify = cTokenModify instanceof CToken ? cTokenModify.address : cTokenModify;
     return this.contract.methods.getMaxRedeem(account, cTokenModify).send(tx);
   }
 
@@ -304,36 +319,42 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   liquidateBorrowAllowed(
-    cTokenBorrowed: string,
-    cTokenCollateral: string,
+    cTokenBorrowed: CToken | string,
+    cTokenCollateral: CToken | string,
     liquidator: string,
     borrower: string,
     repayAmount: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cTokenBorrowed = cTokenBorrowed instanceof CToken ? cTokenBorrowed.address : cTokenBorrowed;
+    cTokenCollateral = cTokenCollateral instanceof CToken ? cTokenCollateral.address : cTokenCollateral;
     return this.contract.methods.liquidateBorrowAllowed(cTokenBorrowed, cTokenCollateral, liquidator, borrower, repayAmount).send(tx);
   }
 
   liquidateBorrowVerify(
-    cTokenBorrowed: string,
-    cTokenCollateral: string,
+    cTokenBorrowed: CToken | string,
+    cTokenCollateral: CToken | string,
     liquidator: string,
     borrower: string,
     actualRepayAmount: number | string | BN,
     seizeTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cTokenBorrowed = cTokenBorrowed instanceof CToken ? cTokenBorrowed.address : cTokenBorrowed;
+    cTokenCollateral = cTokenCollateral instanceof CToken ? cTokenCollateral.address : cTokenCollateral;
     return this.contract.methods.liquidateBorrowVerify(cTokenBorrowed, cTokenCollateral, liquidator, borrower, actualRepayAmount, seizeTokens).send(tx);
   }
 
   liquidateCalculateSeizeTokens(
-    cTokenBorrowed: string,
-    cTokenCollateral: string,
+    cTokenBorrowed: CToken | string,
+    cTokenCollateral: CToken | string,
     acountRepayAmount: number | string | BN,
   ): Promise<{
     0: string;
     1: string;
   }> {
+    cTokenBorrowed = cTokenBorrowed instanceof CToken ? cTokenBorrowed.address : cTokenBorrowed;
+    cTokenCollateral = cTokenCollateral instanceof CToken ? cTokenCollateral.address : cTokenCollateral;
     return this.contract.methods.liquidateCalculateSeizeTokens(cTokenBorrowed, cTokenCollateral, acountRepayAmount).call();
   }
 
@@ -357,11 +378,12 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   mintAllowed(
-    cToken: string,
+    cToken: CToken | string,
     minter: string,
     mintAmount: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.mintAllowed(cToken, minter, mintAmount).send(tx);
   }
 
@@ -372,22 +394,24 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   mintVerify(
-    cToken: string, 
+    cToken: CToken | string,
     minter: string,
     actualMintAmount: number | string | BN,
     mintTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.mintVerify(cToken, minter, actualMintAmount, mintTokens).send(tx);
   }
 
   mintWithinLimits(
-    cToken: string,
+    cToken: CToken | string,
     minter: string,
     actualMintAmount: number | string | BN,
     mintTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.mintWithinLimits(cToken, minter, actualMintAmount, mintTokens).send(tx);
   }
 
@@ -408,54 +432,60 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   redeemAllowed(
-    cToken: string,
+    cToken: CToken | string,
     redeemer: string,
     redeemTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.redeemAllowed(cToken, redeemer, redeemTokens).send(tx);
   }
 
   redeemVerify(
-    cToken: string,
+    cToken: CToken | string,
     redeemer: string,
     redeemAmount: number | string | BN,
     redeemTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.redeemVerify(cToken, redeemer, redeemAmount, redeemTokens).send(tx);
   }
 
   repayBorrowAllowed(
-    cToken: string,
+    cToken: CToken | string,
     payer: string,
     borrower: string,
     repayAmount: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.repayBorrowAllowed(cToken, payer, borrower, repayAmount).send(tx);
   }
 
   repayBorrowVerify(
-    cToken: string,
+    cToken: CToken | string,
     payer: string,
     borrower: string,
     actualRepayAmount: number | string | BN,
     borrowerIndex: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.repayBorrowVerify(cToken, payer, borrower, actualRepayAmount, borrowerIndex).send(tx);
   }
 
   seizeAllowed(
-    cTokenCollateral: string,
-    cTokenBorrwed: string,
+    cTokenBorrowed: CToken | string,
+    cTokenCollateral: CToken | string,
     liquidator: string,
     borrower: string,
     serizeTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
-    return this.contract.methods.seizeAllowed(cTokenCollateral, cTokenBorrwed, liquidator, borrower, serizeTokens).send(tx);
+    cTokenBorrowed = cTokenBorrowed instanceof CToken ? cTokenBorrowed.address : cTokenBorrowed;
+    cTokenCollateral = cTokenCollateral instanceof CToken ? cTokenCollateral.address : cTokenCollateral;
+    return this.contract.methods.seizeAllowed(cTokenCollateral, cTokenBorrowed, liquidator, borrower, serizeTokens).send(tx);
   }
 
   seizeGuardianPaused(): Promise<boolean>
@@ -464,13 +494,15 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   seizeVerify(
-    cTokenCollateral: string,
-    cTokenBorrowed: string,
+    cTokenBorrowed: CToken | string,
+    cTokenCollateral: CToken | string,
     liquidator: string,
     borrower: string,
     seizeTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cTokenBorrowed = cTokenBorrowed instanceof CToken ? cTokenBorrowed.address : cTokenBorrowed;
+    cTokenCollateral = cTokenCollateral instanceof CToken ? cTokenCollateral.address : cTokenCollateral;
     return this.contract.methods.seizeVerify(cTokenCollateral, cTokenBorrowed, liquidator, borrower, seizeTokens).send(tx);
   }
 
@@ -481,12 +513,13 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   transferAllowed(
-    cToken: string,
+    cToken: CToken | string,
     src: string,
     dst: string,
     transferTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.transferAllowed(cToken, src, dst, transferTokens).send(tx);
   }
 
@@ -495,12 +528,13 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   transferVerify(
-    cToken: string,
+    cToken: CToken | string,
     src: string,
     dst: string,
     transferTokens: number | string | BN,
     tx?: NonPayableTx
   ): PromiEvent<TransactionReceipt> {
+    cToken = cToken instanceof CToken ? cToken.address : cToken;
     return this.contract.methods.transferVerify(cToken, src, dst, transferTokens).send(tx);
   }
 
