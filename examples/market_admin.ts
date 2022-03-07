@@ -6,9 +6,7 @@ import Web3 from "web3";
   try {
     const provider = new HDWalletProvider(process.env.PRIVATE_KEY!, "https://matic-mainnet-full-rpc.bwarelabs.com");
     const web3 = new Web3(provider);
-    const sdk = new MarketSDK(web3);
-
-    await sdk.init();
+    const sdk = await MarketSDK.init(web3);
 
     const pools = await sdk.poolDirectory!.getAllPools();
     const comptroller = pools[0].comptroller;

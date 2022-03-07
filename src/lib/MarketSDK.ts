@@ -68,6 +68,13 @@ class MarketSDK {
   isMarketAdmin(address: string): Promise<boolean> {
     return new MarketAdmin(this, address).isMarketAdmin();
   }
+
+  static async init(web3: Web3){
+    const sdk = new MarketSDK(web3);
+    await sdk.init();
+
+    return sdk;
+  }
 }
 
 export default MarketSDK;
