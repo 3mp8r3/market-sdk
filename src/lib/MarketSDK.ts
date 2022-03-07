@@ -1,6 +1,5 @@
 import Web3 from "web3";
 import BN from "bn.js";
-import fetch from "isomorphic-unfetch";
 
 import Comptroller from "./Comptroller";
 import MarketAdmin from "./MarketAdmin";
@@ -13,7 +12,6 @@ import { PoolLensV1, PoolLensV2 } from "./PoolLens";
 import Addrs from "../constants/addrs";
 
 class MarketSDK {
-  readonly apiURL: string = "https://sls.market.xyz/";
   readonly web3: Web3;
 
   poolDirectory?: PoolDirectory;
@@ -41,13 +39,6 @@ class MarketSDK {
     this.poolDirectory = new PoolDirectory(this, poolDirectoryAddress);
   }
 
-  async getTokenData(address: string, chainId?: number | string){
-    const _chainId = Number(chainId) || await this.web3.eth.getChainId();
-    const res = await this._getAPIReq(`tokenData?address=${address}&chainId=${_chainId}`);
-
-    return res;
-  }
-
   getAllPools(): Promise<{
     indexes: BN[];
     pools: Pool[];
@@ -62,7 +53,7 @@ class MarketSDK {
   }
 
   getPoolsByOwner(owner: string){
-    return this._getAPIReq(`getPoolsByOwner?owner=${owner}`);
+    // TODO: implement
   }
 
   getPoolAssetsWithData(comptroller: Comptroller | string): Promise<PoolAsset[]> {
@@ -77,16 +68,6 @@ class MarketSDK {
   isMarketAdmin(address: string): Promise<boolean> {
     return new MarketAdmin(this, address).isMarketAdmin();
   }
-
-  private async _getAPIReq(endpoint: string){
-    const res = await fetch(`${this.apiURL}/api/${endpoint}`)
-
-    if(res.status !== 200){
-      throw new Error(`API request failed with status ${res.status}`);
-    }
-    return await res.json();
-  }
-
 }
 
 export default MarketSDK;
