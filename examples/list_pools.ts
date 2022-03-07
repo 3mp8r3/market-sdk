@@ -1,5 +1,3 @@
-// List all pools on a given network
-
 import { MarketSDK } from "../src";
 import Web3 from "web3";
 
