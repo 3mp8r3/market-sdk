@@ -11,8 +11,25 @@ import { PoolLensV1, PoolLensV2 } from "./PoolLens";
 
 import Addrs from "../constants/addrs";
 
+export interface MarketOptions {
+  poolDirectory: string;
+  poolLens: string;
+  blocksPerMin: number;
+  bytecodeHashes: {
+    oracle: {
+      [key: string]: string
+    },
+    irm: {
+      JumpRateModel: string;
+      JumpRateModelV2: string;
+    }
+  };
+  ownedAccounts: string[];
+};
+
 class MarketSDK {
   readonly web3: Web3;
+  options?: MarketOptions;
 
   poolDirectory?: PoolDirectory;
   lens: {
@@ -20,8 +37,9 @@ class MarketSDK {
     v2?: PoolLensV2
   } = {};
 
-  constructor(web3: Web3){
+  constructor(web3: Web3, options?: MarketOptions){
     this.web3 = web3;
+    this.options = options;
   }
 
   private checkInit(){
@@ -31,9 +49,12 @@ class MarketSDK {
   }
 
   async init(){
-    const chainId = await this.web3.eth.getChainId();
-    const lensV1Address = Addrs[chainId as keyof typeof Addrs]?.FUSE_POOL_LENS_CONTRACT_ADDRESS;
-    const poolDirectoryAddress = Addrs[chainId as keyof typeof Addrs]?.FUSE_POOL_DIRECTORY_CONTRACT_ADDRESS;
+    if(!this.options){
+      const chainId = await this.web3.eth.getChainId();
+      this.options = Addrs[chainId as keyof typeof Addrs];
+    }
+    const lensV1Address = this.options.poolLens;
+    const poolDirectoryAddress = this.options.poolDirectory;
 
     this.lens.v1 = new PoolLensV1(this, lensV1Address);
     this.poolDirectory = new PoolDirectory(this, poolDirectoryAddress);

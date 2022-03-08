@@ -39,7 +39,7 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
   ): PromiEvent<TransactionReceipt> {
     return this.contract.methods._renounceFuseAdminRights().send(tx);
   }
-  
+
   _setAdminFee(
     newAdminFeeMantissa: number | string | BN,
     tx?: NonPayableTx
