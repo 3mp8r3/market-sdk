@@ -95,24 +95,34 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods._withdrawFuseFees(withdrawAmount).send(tx);
   }
 
-  accrualBlockNumber(): Promise<string> {
-    return this.contract.methods.accrualBlockNumber().call();
+  accrualBlockNumber(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.accrualBlockNumber().call(tx);
   }
 
-  accrueInterest(): Promise<string> {
-    return this.contract.methods.accrueInterest().call();
+  accrueInterest(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.accrueInterest().call(tx);
   }
 
-  admin(): Promise<string> {
-    return this.contract.methods.admin().call();
+  admin(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.admin().call(tx);
   }
 
-  adminFeeMantissa(): Promise<string> {
-    return this.contract.methods.adminFeeMantissa().call();
+  adminFeeMantissa(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.adminFeeMantissa().call(tx);
   }
 
-  adminHasRights(): Promise<boolean> {
-    return this.contract.methods.adminHasRights().call();
+  adminHasRights(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.adminHasRights().call(tx);
   }
 
   allowance(
@@ -131,12 +141,18 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.approve(spender, amount).send(tx);
   }
 
-  balanceOf(owner: string): Promise<string> {
-    return this.contract.methods.balanceOf(owner).call();
+  balanceOf(
+    owner: string,
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.balanceOf(owner).call(tx);
   }
 
-  balanceOfUnderlying(owner: string): Promise<string> {
-    return this.contract.methods.balanceOfUnderlying(owner).call();
+  balanceOfUnderlying(
+    owner: string,
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.balanceOfUnderlying(owner).call(tx);
   }
 
   borrow(
@@ -146,65 +162,96 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.borrow(borrowAmount).send(tx);
   }
 
-  borrowBalanceCurrent(account: string): Promise<string> {
-    return this.contract.methods.borrowBalanceCurrent(account).call();
+  borrowBalanceCurrent(
+    account: string,
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.borrowBalanceCurrent(account).call(tx);
   }
 
-  borrowBalanceStored(account: string): Promise<string> {
-    return this.contract.methods.borrowBalanceStored(account).call();
+  borrowBalanceStored(
+    account: string,
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.borrowBalanceStored(account).call(tx);
   }
 
-  borrowIndex(): Promise<string> {
-    return this.contract.methods.borrowIndex().call();
+  borrowIndex(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.borrowIndex().call(tx);
   }
 
-  borrowRatePerBlock(): Promise<string> {
-    return this.contract.methods.borrowRatePerBlock().call();
+  borrowRatePerBlock(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.borrowRatePerBlock().call(tx);
   }
   
-  decimals(): Promise<string> {
-    return this.contract.methods.decimals().call();
+  decimals(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.decimals().call(tx);
   }
 
-  exchangeRateCurrent(): Promise<string> {
-    return this.contract.methods.exchangeRateCurrent().call();
+  exchangeRateCurrent(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.exchangeRateCurrent().call(tx);
   }
 
-  exchangeRateStored(): Promise<string> {
-    return this.contract.methods.exchangeRateStored().call();
+  exchangeRateStored(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.exchangeRateStored().call(tx);
   }
 
-  fuseAdminHasRights(): Promise<boolean> {
-    return this.contract.methods.fuseAdminHasRights().call();
+  fuseAdminHasRights(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.fuseAdminHasRights().call(tx);
   }
 
-  fuseFeeMantissa(): Promise<string> {
-    return this.contract.methods.fuseFeeMantissa().call();
+  fuseFeeMantissa(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.fuseFeeMantissa().call(tx);
   }
 
-  getAccountSnapshot(account: string): Promise<{
+  getAccountSnapshot(
+    account: string,
+    tx?: NonPayableTx
+  ): Promise<{
     0: string;
     1: string;
     2: string;
     3: string;
   }> {
-    return this.contract.methods.getAccountSnapshot(account).call();
+    return this.contract.methods.getAccountSnapshot(account).call(tx);
   }
 
-  getCash(): Promise<string> {
-    return this.contract.methods.getCash().call();
+  getCash(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.getCash().call(tx);
   }
 
-  interestRateModel(): Promise<string> {
-    return this.contract.methods.interestRateModel().call();
+  interestRateModel(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.interestRateModel().call(tx);
   }
 
-  isCEther(): Promise<boolean> {
-    return this.contract.methods.isCEther().call();
+  isCEther(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.isCEther().call(tx);
   }
 
-  isCToken(): Promise<boolean> {
-    return this.contract.methods.isCToken().call();
+  isCToken(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.isCToken().call(tx);
   }
 
   liquidateBorrow(
@@ -226,12 +273,16 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.mint(mintAmount).send(tx);
   }
 
-  name(): Promise<string> {
-    return this.contract.methods.name().call();
+  name(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.name().call(tx);
   }
 
-  pendingAdmin(): Promise<string> {
-    return this.contract.methods.pendingAdmin().call();
+  pendingAdmin(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.pendingAdmin().call(tx);
   }
 
   redeem(
@@ -263,8 +314,10 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.repayBorrowBehalf(borrower, repayAmount).send(tx);
   }
 
-  reserveFactorMantissa(): Promise<string> {
-    return this.contract.methods.reserveFactorMantissa().call();
+  reserveFactorMantissa(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.reserveFactorMantissa().call(tx);
   }
 
   seize(
@@ -276,36 +329,52 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.seize(liquidator, borrower, seizeTokens).send(tx);
   }
 
-  supplyRatePerBlock(): Promise<string> {
-    return this.contract.methods.supplyRatePerBlock().call();
+  supplyRatePerBlock(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.supplyRatePerBlock().call(tx);
   }
 
-  symbol(): Promise<string> {
-    return this.contract.methods.symbol().call();
+  symbol(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.symbol().call(tx);
   }
 
-  totalAdminFees(): Promise<string> {
-    return this.contract.methods.totalAdminFees().call();
+  totalAdminFees(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.totalAdminFees().call(tx);
   }
 
-  totalBorrows(): Promise<string> {
-    return this.contract.methods.totalBorrows().call();
+  totalBorrows(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.totalBorrows().call(tx);
   }
 
-  totalBorrowsCurrent(): Promise<string> {
-    return this.contract.methods.totalBorrowsCurrent().call();
+  totalBorrowsCurrent(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.totalBorrowsCurrent().call(tx);
   }
 
-  totalFuseFees(): Promise<string> {
-    return this.contract.methods.totalFuseFees().call();
+  totalFuseFees(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.totalFuseFees().call(tx);
   }
 
-  totalReserves(): Promise<string> {
-    return this.contract.methods.totalReserves().call();
+  totalReserves(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.totalReserves().call(tx);
   }
 
-  totalSupply(): Promise<string> {
-    return this.contract.methods.totalSupply().call();
+  totalSupply(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.totalSupply().call(tx);
   }
 
   transfer(
@@ -325,8 +394,10 @@ class CToken extends MarketContract<CTokenWeb3Interface> {
     return this.contract.methods.transferFrom(src, dst, amount).send(tx);
   }
 
-  underlying(): Promise<string> {
-    return this.contract.methods.underlying().call();
+  underlying(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.underlying().call(tx);
   }
 }
 

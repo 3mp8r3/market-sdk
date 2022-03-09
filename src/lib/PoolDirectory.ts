@@ -62,8 +62,10 @@ class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
     return this.contract.methods.enforceDeployerWhitelist().send(tx);
   }
 
-  async getAllPools(): Promise<Pool[]> {
-    const poolsRaw = await this.contract.methods.getAllPools().call();
+  async getAllPools(
+    tx?: NonPayableTx
+  ): Promise<Pool[]> {
+    const poolsRaw = await this.contract.methods.getAllPools().call(tx);
     const pools: Pool[] = [];
 
     for(const pool of poolsRaw){
@@ -73,18 +75,20 @@ class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
   }
 
   getBookmarks(
-    account: string
+    account: string,
+    tx?: NonPayableTx
   ): Promise<string[]> {
-    return this.contract.methods.getBookmarks(account).call();
+    return this.contract.methods.getBookmarks(account).call(tx);
   }
 
   async getPoolsByAccount(
-    account: string
+    account: string,
+    tx?: NonPayableTx
   ): Promise<{
     indexes: BN[];
     pools: Pool[];
   }> {
-    const { 0: indexesRaw, 1: poolsRaw } = await this.contract.methods.getPoolsByAccount(account).call();
+    const { 0: indexesRaw, 1: poolsRaw } = await this.contract.methods.getPoolsByAccount(account).call(tx);
 
     const indexes: BN[] = [];
     const pools: Pool[] = [];
@@ -98,11 +102,13 @@ class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
     return { indexes, pools };
   }
 
-  async getPublicPools(): Promise<{
+  async getPublicPools(
+    tx?: NonPayableTx
+  ): Promise<{
     indexes: BN[];
     pools: Pool[];
   }> {
-    const { 0: indexesRaw, 1: poolsRaw } = await this.contract.methods.getPublicPools().call();
+    const { 0: indexesRaw, 1: poolsRaw } = await this.contract.methods.getPublicPools().call(tx);
 
     const indexes: BN[] = [];
     const pools: Pool[] = [];
@@ -124,20 +130,24 @@ class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
     return this.contract.methods.initialize(_enforeceDeployerWhitelist, _deployerWhitelist).send(tx);
   }
 
-  owner(): Promise<string> {
-    return this.contract.methods.owner().call();
+  owner(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.owner().call(tx);
   }
 
   poolExists(
-    args0: string
+    args0: string,
+    tx?: NonPayableTx
   ): Promise<boolean> {
-    return this.contract.methods.poolExists(args0).call();
+    return this.contract.methods.poolExists(args0).call(tx);
   }
 
   async pools(
-    arg0: number | string | BN
+    arg0: number | string | BN,
+    tx?: NonPayableTx
   ): Promise<Pool> {
-    const poolRaw = await this.contract.methods.pools(arg0).call();
+    const poolRaw = await this.contract.methods.pools(arg0).call(tx);
     return normalizePool(poolRaw, this.sdk);
   }
 

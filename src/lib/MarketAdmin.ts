@@ -27,7 +27,9 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     return this.contract.methods.addRewardsDistributor(distributor).send(tx);
   }
 
-  async comptroller(): Promise<Comptroller> {
+  async comptroller(
+    tx?: NonPayableTx
+  ): Promise<Comptroller> {
     const address = await this.contract.methods.comptroller().call();
     return new Comptroller(this.sdk, address);
   }
@@ -49,7 +51,9 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     return this.contract.methods.deployMarket(deployData).send(tx);
   }
 
-  async isMarketAdmin(): Promise<boolean> {
+  async isMarketAdmin(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
     try {
       return await this.contract.methods.isMarketAdmin().call();
     } catch(e){
@@ -57,7 +61,9 @@ class MarketAdmin extends MarketContract<MarketAdminWeb3Interface> {
     }
   }
 
-  owner(): Promise<string> {
+  owner(
+    tx?: NonPayableTx
+  ): Promise<string> {
     return this.contract.methods.owner().call();
   }
 

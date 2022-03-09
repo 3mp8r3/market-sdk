@@ -22,12 +22,16 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods._become(unitroller).send(tx);
   }
 
-  _borrowGuardianPaused(): Promise<boolean> {
-    return this.contract.methods._borrowGuardianPaused().call();
+  _borrowGuardianPaused(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods._borrowGuardianPaused().call(tx);
   }
 
-  _mintGuardianPaused(): Promise<boolean> {
-    return this.contract.methods._mintGuardianPaused().call();
+  _mintGuardianPaused(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods._mintGuardianPaused().call(tx);
   }
 
   _setBorrowPaused(
@@ -149,29 +153,35 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   accountAssets(
     arg0: string,
     arg1: number | string | BN,
+    tx?: NonPayableTx
   ): Promise<string> {
-    return this.contract.methods.accountAssets(arg0, arg1).call();
+    return this.contract.methods.accountAssets(arg0, arg1).call(tx);
   }
 
-  admin(): Promise<string> {
-    return this.contract.methods.admin().call();
+  admin(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.admin().call(tx);
   }
 
-  adminHasRights(): Promise<boolean> {
-    return this.contract.methods.adminHasRights().call();
+  adminHasRights(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.adminHasRights().call(tx);
   }
 
   allBorrowers(
     arg0: number | string | BN,
     tx?: NonPayableTx
   ): Promise<string> {
-    return this.contract.methods.allBorrowers(arg0).call();
+    return this.contract.methods.allBorrowers(arg0).call(tx);
   }
 
   allMarkets(
     arg0: number | string | BN,
+    tx?: NonPayableTx
   ): Promise<string> {
-    return this.contract.methods.allMarkets(arg0).call();
+    return this.contract.methods.allMarkets(arg0).call(tx);
   }
 
   borrowAllowed(
@@ -185,9 +195,10 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   borrowGuardianPaused(
-    arg0: string
+    arg0: string,
+    tx?: NonPayableTx
   ): Promise<boolean> {
-    return this.contract.methods.borrowGuardianPaused(arg0).call();
+    return this.contract.methods.borrowGuardianPaused(arg0).call(tx);
   }
 
   borrowVerify(
@@ -210,29 +221,37 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   cTokensByUnderlying(
-    arg0: string
+    arg0: string,
+    tx?: NonPayableTx
   ): Promise<string> {
-    return this.contract.methods.cTokensByUnderlying(arg0).call();
+    return this.contract.methods.cTokensByUnderlying(arg0).call(tx);
   }
 
   checkMembership(
     account: string,
     cToken: CToken | string,
+    tx?: NonPayableTx
   ): Promise<boolean> {
     cToken = cToken instanceof CToken ? cToken.address : cToken;
-    return this.contract.methods.checkMembership(account, cToken).call();
+    return this.contract.methods.checkMembership(account, cToken).call(tx);
   }
 
-  closeFactorMantissa(): Promise<string> {
-    return this.contract.methods.closeFactorMantissa().call();
+  closeFactorMantissa(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.closeFactorMantissa().call(tx);
   }
 
-  comptrollerImplementation(): Promise<string> {
-    return this.contract.methods.comptrollerImplementation().call();
+  comptrollerImplementation(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.comptrollerImplementation().call(tx);
   }
 
-  enforceWhitelist(): Promise<boolean> {
-    return this.contract.methods.enforceWhitelist().call();
+  enforceWhitelist(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.enforceWhitelist().call(tx);
   }
 
   enterMarkets(
@@ -250,32 +269,40 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.exitMarket(cTokenAddress).send(tx);
   }
 
-  fuseAdminHasRights(): Promise<boolean> {
-    return this.contract.methods.fuseAdminHasRights().call();
+  fuseAdminHasRights(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.fuseAdminHasRights().call(tx);
   }
 
   getAccountLiquidity(
-    account: string
+    account: string,
+    tx?: NonPayableTx
   ): Promise<{
     0: string;
     1: string;
     2: string;
   }> {
-    return this.contract.methods.getAccountLiquidity(account).call();
+    return this.contract.methods.getAccountLiquidity(account).call(tx);
   }
 
-  getAllBorrowers(): Promise<string[]> {
-    return this.contract.methods.getAllBorrowers().call();
+  getAllBorrowers(
+    tx?: NonPayableTx
+  ): Promise<string[]> {
+    return this.contract.methods.getAllBorrowers().call(tx);
   }
 
-  getAllMarkets(): Promise<string[]> {
-    return this.contract.methods.getAllMarkets().call();
+  getAllMarkets(
+    tx?: NonPayableTx
+  ): Promise<string[]> {
+    return this.contract.methods.getAllMarkets().call(tx);
   }
 
   getAssetsIn(
     account: string,
+    tx?: NonPayableTx
   ): Promise<string[]> {
-    return this.contract.methods.getAssetsIn(account).call();
+    return this.contract.methods.getAssetsIn(account).call(tx);
   }
 
   getHypotheticalAccountLiquidity(
@@ -283,13 +310,14 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     cTokenModify: CToken | string,
     redeemTokens: number | string | BN,
     borrowAmount: number | string | BN,
+    tx?: NonPayableTx
   ): Promise<{
     0: string;
     1: string;
     2: string;
   }> {
     cTokenModify = cTokenModify instanceof CToken ? cTokenModify.address : cTokenModify;
-    return this.contract.methods.getHypotheticalAccountLiquidity(account, cTokenModify, redeemTokens, borrowAmount).call();
+    return this.contract.methods.getHypotheticalAccountLiquidity(account, cTokenModify, redeemTokens, borrowAmount).call(tx);
   }
 
   getMaxBorrow(
@@ -310,12 +338,16 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.getMaxRedeem(account, cTokenModify).send(tx);
   }
 
-  getWhitelist(): Promise<string[]> {
-    return this.contract.methods.getWhitelist().call();
+  getWhitelist(
+    tx?: NonPayableTx
+  ): Promise<string[]> {
+    return this.contract.methods.getWhitelist().call(tx);
   }
 
-  isComptroller(): Promise<boolean> {
-    return this.contract.methods.isComptroller().call();
+  isComptroller(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.isComptroller().call(tx);
   }
 
   liquidateBorrowAllowed(
@@ -349,32 +381,38 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     cTokenBorrowed: CToken | string,
     cTokenCollateral: CToken | string,
     acountRepayAmount: number | string | BN,
+    tx?: NonPayableTx
   ): Promise<{
     0: string;
     1: string;
   }> {
     cTokenBorrowed = cTokenBorrowed instanceof CToken ? cTokenBorrowed.address : cTokenBorrowed;
     cTokenCollateral = cTokenCollateral instanceof CToken ? cTokenCollateral.address : cTokenCollateral;
-    return this.contract.methods.liquidateCalculateSeizeTokens(cTokenBorrowed, cTokenCollateral, acountRepayAmount).call();
+    return this.contract.methods.liquidateCalculateSeizeTokens(cTokenBorrowed, cTokenCollateral, acountRepayAmount).call(tx);
   }
 
-  liquidationIncentiveMantissa(): Promise<string> {
-    return this.contract.methods.liquidationIncentiveMantissa().call();
+  liquidationIncentiveMantissa(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.liquidationIncentiveMantissa().call(tx);
   }
 
   markets(
-    arg0: string
+    arg0: string,
+    tx?: NonPayableTx
   ): Promise<{
     isListed: boolean;
     collateralFactorMantissa: string;
     0: boolean;
     1: string;
   }> {
-    return this.contract.methods.markets(arg0).call();
+    return this.contract.methods.markets(arg0).call(tx);
   }
 
-  maxAssets(): Promise<string>  {
-    return this.contract.methods.maxAssets().call();
+  maxAssets(
+    tx?: NonPayableTx
+  ): Promise<string>  {
+    return this.contract.methods.maxAssets().call(tx);
   }
 
   mintAllowed(
@@ -388,9 +426,10 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   mintGuardianPaused(
-    arg0: string
+    arg0: string,
+    tx?: NonPayableTx
   ): Promise<boolean> {
-    return this.contract.methods.mintGuardianPaused(arg0).call();
+    return this.contract.methods.mintGuardianPaused(arg0).call(tx);
   }
 
   mintVerify(
@@ -415,20 +454,28 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.mintWithinLimits(cToken, minter, actualMintAmount, mintTokens).send(tx);
   }
 
-  oracle(): Promise<string> {
-    return this.contract.methods.oracle().call();
+  oracle(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.oracle().call(tx);
   }
 
-  pauseGuardian(): Promise<string> {
-    return this.contract.methods.pauseGuardian().call();
+  pauseGuardian(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.pauseGuardian().call(tx);
   }
 
-  pendingAdmin(): Promise<string> {
-    return this.contract.methods.pendingAdmin().call();
+  pendingAdmin(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.pendingAdmin().call(tx);
   }
 
-  pendingComptrollerImplementation(): Promise<string> {
-    return this.contract.methods.pendingComptrollerImplementation().call();
+  pendingComptrollerImplementation(
+    tx?: NonPayableTx
+  ): Promise<string> {
+    return this.contract.methods.pendingComptrollerImplementation().call(tx);
   }
 
   redeemAllowed(
@@ -488,9 +535,10 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.seizeAllowed(cTokenCollateral, cTokenBorrowed, liquidator, borrower, serizeTokens).send(tx);
   }
 
-  seizeGuardianPaused(): Promise<boolean>
-  {
-    return this.contract.methods.seizeGuardianPaused().call();
+  seizeGuardianPaused(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.seizeGuardianPaused().call(tx);
   }
 
   seizeVerify(
@@ -507,9 +555,10 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   suppliers(
-    arg0: string
+    arg0: string,
+    tx?: NonPayableTx
   ): Promise<boolean> {
-    return this.contract.methods.suppliers(arg0).call();
+    return this.contract.methods.suppliers(arg0).call(tx);
   }
 
   transferAllowed(
@@ -523,8 +572,10 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
     return this.contract.methods.transferAllowed(cToken, src, dst, transferTokens).send(tx);
   }
 
-  transferGuardianPaused(): Promise<boolean> {
-    return this.contract.methods.transferGuardianPaused().call();
+  transferGuardianPaused(
+    tx?: NonPayableTx
+  ): Promise<boolean> {
+    return this.contract.methods.transferGuardianPaused().call(tx);
   }
 
   transferVerify(
@@ -539,15 +590,17 @@ class Comptroller extends MarketContract<ComptrollerWeb3Interface> {
   }
 
   whitelist(
-    arg0: string
+    arg0: string,
+    tx?: NonPayableTx
   ): Promise<boolean> {
-    return this.contract.methods.whitelist(arg0).call();
+    return this.contract.methods.whitelist(arg0).call(tx);
   }
 
   whitelistArray(
-    arg0: number | string | BN
+    arg0: number | string | BN,
+    tx?: NonPayableTx
   ): Promise<string> {
-    return this.contract.methods.whitelistArray(arg0).call();
+    return this.contract.methods.whitelistArray(arg0).call(tx);
   }
 }
 
