@@ -2,7 +2,7 @@
   "name": "market-sdk",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "author": "Apoorv <apoorvsingal0@gmail.com>",
+  "author": "Apoorv <apoorv@market.xyz>",
   "license": "MIT",
   "files": [
     "dist/**/*"
@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "bn.js": "^5.2.0",
-    "web3": "^1.7.0",
-    "web3-eth-contract": "^1.7.0"
+    "web3": "^1.7.0"
   }
 }
