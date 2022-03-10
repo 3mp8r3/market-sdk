@@ -10,7 +10,7 @@ import { PoolDirectory as PoolDirectoryWeb3Interface } from "../types/PoolDirect
 import MarketSDK from "./MarketSDK";
 import { Pool, normalizePool } from "./Pool";
 
-class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
+class PoolDirectoryV1 extends MarketContract<PoolDirectoryWeb3Interface> {
   constructor(sdk: MarketSDK, address: string){
     super(sdk, address, PoolDirectoryArtifact.abi);
   }
@@ -181,4 +181,12 @@ class PoolDirectory extends MarketContract<PoolDirectoryWeb3Interface> {
   }
 }
 
-export default PoolDirectory;
+class PoolDirectoryV2 {
+
+};
+
+export {
+  PoolDirectoryV1,
+  PoolDirectoryV2
+};
+

@@ -4,7 +4,7 @@ import BN from "bn.js";
 import Comptroller from "./Comptroller";
 import MarketAdmin from "./MarketAdmin";
 import CToken from "./CToken";
-import PoolDirectory from "./PoolDirectory";
+import { PoolDirectoryV1, PoolDirectoryV2 } from "./PoolDirectory";
 
 import { Pool, PoolAsset } from "./Pool";
 import { PoolLensV1, PoolLensV2 } from "./PoolLens";
@@ -31,7 +31,11 @@ class MarketSDK {
   readonly web3: Web3;
   options?: MarketOptions;
 
-  poolDirectory?: PoolDirectory;
+  poolDirectory: {
+    v1?: PoolDirectoryV1,
+    v2?: PoolDirectoryV2
+  } = {};
+
   lens: {
     v1?: PoolLensV1,
     v2?: PoolLensV2
@@ -57,7 +61,7 @@ class MarketSDK {
     const poolDirectoryAddress = this.options.poolDirectory;
 
     this.lens.v1 = new PoolLensV1(this, lensV1Address);
-    this.poolDirectory = new PoolDirectory(this, poolDirectoryAddress);
+    this.poolDirectory.v1 = new PoolDirectoryV1(this, poolDirectoryAddress);
   }
 
   getAllPools(): Promise<{

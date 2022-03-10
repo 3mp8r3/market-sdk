@@ -8,7 +8,7 @@ import Web3 from "web3";
     const web3 = new Web3(provider);
     const sdk = await MarketSDK.init(web3);
 
-    const pools = await sdk.poolDirectory!.getAllPools();
+    const pools = await sdk.poolDirectory.v1!.getAllPools();
     const comptroller = pools[0].comptroller;
     const admin = await comptroller.admin();
 
