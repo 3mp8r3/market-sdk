@@ -1,4 +1,4 @@
-import { MarketAdmin, MarketSDK } from "../src";
+import { MarketAdmin, MarketSDK, Comptroller } from "../src";
 import HDWalletProvider from "@truffle/hdwallet-provider";
 import Web3 from "web3";
 
@@ -8,8 +8,7 @@ import Web3 from "web3";
     const web3 = new Web3(provider);
     const sdk = await MarketSDK.init(web3);
 
-    const pools = await sdk.poolDirectory!.getAllPools();
-    const comptroller = pools[0].comptroller;
+    const comptroller = new Comptroller(sdk, "0x2037dBC62CD88D709C6e3ba3d14C6a1053853f13");
     const adminAddr = await comptroller.admin();
 
     console.log(await comptroller.adminHasRights());
