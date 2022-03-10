@@ -94,8 +94,8 @@ class MarketSDK {
     return new MarketAdmin(this, address).isMarketAdmin();
   }
 
-  static async init(web3: Web3){
-    const sdk = new MarketSDK(web3);
+  static async init(web3: Web3, options?: MarketOptions){
+    const sdk = new MarketSDK(web3, options);
     await sdk.init();
 
     return sdk;
