@@ -11,7 +11,7 @@ import PoolLensV2Artifact from "../abi/PoolLensV2.json";
 
 import Comptroller from "./Comptroller";
 import CToken from "./CToken";
-import PoolDirectory from "./PoolDirectory";
+import { PoolDirectoryV1 } from "./PoolDirectory";
 
 import {
   Pool,
@@ -22,7 +22,7 @@ import {
   normalizePoolAsset,
   normalizePoolUser,
   normalizeCTokenOwnership,
-  serializePool
+  serializePool,
 } from "./Pool";
 import { NonPayableTx } from "../types/types";
 
@@ -35,12 +35,15 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     comptroller: Comptroller | string,
     tx?: NonPayableTx
   ): Promise<PoolAsset[]> {
-    comptroller = comptroller instanceof Comptroller ? comptroller.address : comptroller;
+    comptroller =
+      comptroller instanceof Comptroller ? comptroller.address : comptroller;
 
-    const assetsRaw = await this.contract.methods.getPoolAssetsWithData(comptroller).call(tx);
+    const assetsRaw = await this.contract.methods
+      .getPoolAssetsWithData(comptroller)
+      .call(tx);
     const assets: PoolAsset[] = [];
 
-    for(const asset of assetsRaw){
+    for (const asset of assetsRaw) {
       assets.push(normalizePoolAsset(asset, this.sdk));
     }
     return assets;
@@ -50,18 +53,21 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     comptroller: Comptroller | string,
     tx?: NonPayableTx
   ): Promise<{
-    comptrollerAdmin: string,
-    comptrollerAdminHasRights: boolean,
-    comptrollerFuseAdminHasRights: boolean,
-    outliners: CTokenOwnership[],
+    comptrollerAdmin: string;
+    comptrollerAdminHasRights: boolean;
+    comptrollerFuseAdminHasRights: boolean;
+    outliners: CTokenOwnership[];
   }> {
-    comptroller = comptroller instanceof Comptroller ? comptroller.address : comptroller;
+    comptroller =
+      comptroller instanceof Comptroller ? comptroller.address : comptroller;
 
-    const raw = await this.contract.methods.getPoolOwnership(comptroller).call(tx);
+    const raw = await this.contract.methods
+      .getPoolOwnership(comptroller)
+      .call(tx);
     const outlinersRaw = raw[3];
     const outliners: CTokenOwnership[] = [];
 
-    for(const outliner of outlinersRaw){
+    for (const outliner of outlinersRaw) {
       outliners.push({
         cToken: new CToken(this.sdk, outliner[0]),
         admin: outliner[1],
@@ -74,7 +80,7 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
       comptrollerAdmin: raw[0],
       comptrollerAdminHasRights: raw[1],
       comptrollerFuseAdminHasRights: raw[2],
-      outliners: outliners
+      outliners: outliners,
     };
   }
 
@@ -82,13 +88,16 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     comptroller: Comptroller | string,
     tx?: NonPayableTx
   ): Promise<{
-    totalSupply: BN,
-    totalBorrow: BN,
-    underlyingTokens: string[],
-    underlyingSymbols: string[],
+    totalSupply: BN;
+    totalBorrow: BN;
+    underlyingTokens: string[];
+    underlyingSymbols: string[];
   }> {
-    comptroller = comptroller instanceof Comptroller ? comptroller.address : comptroller;
-    const raw = await this.contract.methods.getPoolSummary(comptroller).call(tx);
+    comptroller =
+      comptroller instanceof Comptroller ? comptroller.address : comptroller;
+    const raw = await this.contract.methods
+      .getPoolSummary(comptroller)
+      .call(tx);
 
     return {
       totalSupply: new BN(raw[0]),
@@ -103,11 +112,14 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     account: string,
     tx?: NonPayableTx
   ): Promise<{
-    suppluBalance: BN,
-    borrowBalance: BN
+    suppluBalance: BN;
+    borrowBalance: BN;
   }> {
-    comptroller = comptroller instanceof Comptroller ? comptroller.address : comptroller;
-    const raw = await this.contract.methods.getPoolUserSummary(comptroller, account).call(tx);
+    comptroller =
+      comptroller instanceof Comptroller ? comptroller.address : comptroller;
+    const raw = await this.contract.methods
+      .getPoolUserSummary(comptroller, account)
+      .call(tx);
 
     return {
       suppluBalance: new BN(raw[0]),
@@ -119,122 +131,130 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     account: string,
     tx?: NonPayableTx
   ): Promise<{
-    indexes: BN[],
-    pools: Pool[],
-    totalSupply: BN[],
-    totalBorrow: BN[],
-    underlyingTokens: string[][],
-    underlyingSymbols: string[][],
-    errored: boolean[],
+    indexes: BN[];
+    pools: Pool[];
+    totalSupply: BN[];
+    totalBorrow: BN[];
+    underlyingTokens: string[][];
+    underlyingSymbols: string[][];
+    errored: boolean[];
   }> {
-    const raw = await this.contract.methods.getPoolsByAccountWithData(account).call(tx);
+    const raw = await this.contract.methods
+      .getPoolsByAccountWithData(account)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      pools: raw[1].map(el => normalizePool(el, this.sdk)),
-      totalSupply: raw[2].map(el => new BN(el)),
-      totalBorrow: raw[3].map(el => new BN(el)),
+      indexes: raw[0].map((el) => new BN(el)),
+      pools: raw[1].map((el) => normalizePool(el, this.sdk)),
+      totalSupply: raw[2].map((el) => new BN(el)),
+      totalBorrow: raw[3].map((el) => new BN(el)),
       underlyingTokens: raw[4],
       underlyingSymbols: raw[5],
       errored: raw[6],
-    }
+    };
   }
 
   async getPoolsBySupplier(
     supplier: string,
     tx?: NonPayableTx
   ): Promise<{
-    indexes: BN[],
-    accountPools: Pool[],
+    indexes: BN[];
+    accountPools: Pool[];
   }> {
-    const raw = await this.contract.methods.getPoolsBySupplier(supplier).call(tx);
+    const raw = await this.contract.methods
+      .getPoolsBySupplier(supplier)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      accountPools: raw[1].map(el => normalizePool(el, this.sdk)),
-    }
+      indexes: raw[0].map((el) => new BN(el)),
+      accountPools: raw[1].map((el) => normalizePool(el, this.sdk)),
+    };
   }
 
   async getPoolsBySupplierWithData(
     supplier: string,
     tx?: NonPayableTx
   ): Promise<{
-    indexes: BN[],
-    pools: Pool[],
-    totalSupply: BN[],
-    totalBorrow: BN[],
-    underlyingTokens: string[][],
-    underlyingSymbols: string[][],
-    errored: boolean[],
+    indexes: BN[];
+    pools: Pool[];
+    totalSupply: BN[];
+    totalBorrow: BN[];
+    underlyingTokens: string[][];
+    underlyingSymbols: string[][];
+    errored: boolean[];
   }> {
-    const raw = await this.contract.methods.getPoolsBySupplierWithData(supplier).call(tx);
+    const raw = await this.contract.methods
+      .getPoolsBySupplierWithData(supplier)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      pools: raw[1].map(el => normalizePool(el, this.sdk)),
-      totalSupply: raw[2].map(el => new BN(el)),
-      totalBorrow: raw[3].map(el => new BN(el)),
+      indexes: raw[0].map((el) => new BN(el)),
+      pools: raw[1].map((el) => normalizePool(el, this.sdk)),
+      totalSupply: raw[2].map((el) => new BN(el)),
+      totalBorrow: raw[3].map((el) => new BN(el)),
       underlyingTokens: raw[4],
       underlyingSymbols: raw[5],
       errored: raw[6],
-    }
+    };
   }
 
   async getPublicPoolUsersWithData(
     maxHealth: number | string | BN,
     tx?: NonPayableTx
   ): Promise<{
-    comptrollers: string[],
-    users: PoolUser[][],
-    closeFactors: BN[],
-    iquidationIncentives: BN[],
-    errored: boolean[],
+    comptrollers: string[];
+    users: PoolUser[][];
+    closeFactors: BN[];
+    iquidationIncentives: BN[];
+    errored: boolean[];
   }> {
-    const raw = await this.contract.methods.getPublicPoolUsersWithData(maxHealth).call(tx);
+    const raw = await this.contract.methods
+      .getPublicPoolUsersWithData(maxHealth)
+      .call(tx);
 
     return {
       comptrollers: raw[0],
-      users: raw[1].map(el => el.map(el => normalizePoolUser(el, this.sdk))),
-      closeFactors: raw[2].map(el => new BN(el)),
-      iquidationIncentives: raw[3].map(el => new BN(el)),
+      users: raw[1].map((el) =>
+        el.map((el) => normalizePoolUser(el, this.sdk))
+      ),
+      closeFactors: raw[2].map((el) => new BN(el)),
+      iquidationIncentives: raw[3].map((el) => new BN(el)),
       errored: raw[4],
-    }
+    };
   }
 
-  async getPublicPoolsWithData(
-    tx?: NonPayableTx
-  ): Promise<{
-    indexes: BN[],
-    pools: Pool[],
-    totalSupply: BN[],
-    totalBorrow: BN[],
-    underlyingTokens: string[][],
-    underlyingSymbols: string[][],
-    errored: boolean[],
+  async getPublicPoolsWithData(tx?: NonPayableTx): Promise<{
+    indexes: BN[];
+    pools: Pool[];
+    totalSupply: BN[];
+    totalBorrow: BN[];
+    underlyingTokens: string[][];
+    underlyingSymbols: string[][];
+    errored: boolean[];
   }> {
     const raw = await this.contract.methods.getPublicPoolsWithData().call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      pools: raw[1].map(el => normalizePool(el, this.sdk)),
-      totalSupply: raw[2].map(el => new BN(el)),
-      totalBorrow: raw[3].map(el => new BN(el)),
+      indexes: raw[0].map((el) => new BN(el)),
+      pools: raw[1].map((el) => normalizePool(el, this.sdk)),
+      totalSupply: raw[2].map((el) => new BN(el)),
+      totalBorrow: raw[3].map((el) => new BN(el)),
       underlyingTokens: raw[4],
       underlyingSymbols: raw[5],
       errored: raw[6],
-    }
+    };
   }
 
   async getUserSummary(
     account: string,
     tx?: NonPayableTx
   ): Promise<{
-    supplyBalance: BN,
-    borrowBalance: BN,
-    errors: boolean
+    supplyBalance: BN;
+    borrowBalance: BN;
+    errors: boolean;
   }> {
     const raw = await this.contract.methods.getUserSummary(account).call(tx);
-    
+
     return {
       supplyBalance: new BN(raw[0]),
       borrowBalance: new BN(raw[1]),
@@ -246,14 +266,16 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     account: string,
     tx?: NonPayableTx
   ): Promise<{
-    indexes: BN[],
-    accountPools: Pool[]
+    indexes: BN[];
+    accountPools: Pool[];
   }> {
-    const raw = await this.contract.methods.getWhitelistedPoolsByAccount(account).call(tx);
+    const raw = await this.contract.methods
+      .getWhitelistedPoolsByAccount(account)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      accountPools: raw[1].map(el => normalizePool(el, this.sdk))
+      indexes: raw[0].map((el) => new BN(el)),
+      accountPools: raw[1].map((el) => normalizePool(el, this.sdk)),
     };
   }
 
@@ -261,25 +283,27 @@ class PoolLensV1 extends MarketContract<PoolLensV1Web3Interface> {
     account: string,
     tx?: NonPayableTx
   ): Promise<{
-    indexes: BN[],
-    pools: Pool[],
-    totalSupply: BN[],
-    totalBorrow: BN[],
-    underlyingTokens: string[][],
-    underlyingSymbols: string[][],
-    errored: boolean[],
+    indexes: BN[];
+    pools: Pool[];
+    totalSupply: BN[];
+    totalBorrow: BN[];
+    underlyingTokens: string[][];
+    underlyingSymbols: string[][];
+    errored: boolean[];
   }> {
-    const raw = await this.contract.methods.getWhitelistedPoolsByAccountWithData(account).call(tx);
+    const raw = await this.contract.methods
+      .getWhitelistedPoolsByAccountWithData(account)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      pools: raw[1].map(el => normalizePool(el, this.sdk)),
-      totalSupply: raw[2].map(el => new BN(el)),
-      totalBorrow: raw[3].map(el => new BN(el)),
+      indexes: raw[0].map((el) => new BN(el)),
+      pools: raw[1].map((el) => normalizePool(el, this.sdk)),
+      totalSupply: raw[2].map((el) => new BN(el)),
+      totalBorrow: raw[3].map((el) => new BN(el)),
       underlyingTokens: raw[4],
       underlyingSymbols: raw[5],
       errored: raw[6],
-    }
+    };
   }
 }
 
@@ -288,43 +312,44 @@ class PoolLensV2 extends MarketContract<PoolLensV2Web3Interface> {
     super(sdk, address, PoolLensV2Artifact.abi);
   }
 
-  async directory(
-    tx?: NonPayableTx
-  ): Promise<PoolDirectory> {
+  async directory(tx?: NonPayableTx): Promise<PoolDirectoryV1> {
     const diirectoryAddress = await this.contract.methods.directory().call(tx);
 
-    return new PoolDirectory(this.sdk, diirectoryAddress);
+    return new PoolDirectoryV1(this.sdk, diirectoryAddress);
   }
 
   async getPoolOwnership(
     comptroller: Comptroller | string,
     tx?: NonPayableTx
   ): Promise<{
-    comptrollerAdmin: string,
-    comptrollerAdminHasRights: boolean,
-    comptrollerFuseAdminHasRights: boolean,
-    outliners: CTokenOwnership[]
+    comptrollerAdmin: string;
+    comptrollerAdminHasRights: boolean;
+    comptrollerFuseAdminHasRights: boolean;
+    outliners: CTokenOwnership[];
   }> {
-    comptroller = comptroller instanceof Comptroller ? comptroller.address : comptroller;
-    const raw = await this.contract.methods.getPoolOwnership(comptroller).call(tx);
+    comptroller =
+      comptroller instanceof Comptroller ? comptroller.address : comptroller;
+    const raw = await this.contract.methods
+      .getPoolOwnership(comptroller)
+      .call(tx);
 
     return {
       comptrollerAdmin: raw[0],
       comptrollerAdminHasRights: raw[1],
       comptrollerFuseAdminHasRights: raw[2],
-      outliners: raw[3].map(el => normalizeCTokenOwnership(el, this.sdk))
+      outliners: raw[3].map((el) => normalizeCTokenOwnership(el, this.sdk)),
     };
   }
 
-  async getPoolSummary(
-    tx?: NonPayableTx
-  ): Promise<{
-    totalSupply: BN,
-    totalBorrow: BN,
-    underlyingTokens: string[],
-    underlyingSymbols: string[],
+  async getPoolSummary(tx?: NonPayableTx): Promise<{
+    totalSupply: BN;
+    totalBorrow: BN;
+    underlyingTokens: string[];
+    underlyingSymbols: string[];
   }> {
-    const raw = await this.contract.methods.getPoolSummary(this.address).call(tx);
+    const raw = await this.contract.methods
+      .getPoolSummary(this.address)
+      .call(tx);
 
     return {
       totalSupply: new BN(raw[0]),
@@ -355,22 +380,22 @@ class PoolLensV2 extends MarketContract<PoolLensV2Web3Interface> {
       number | string | BN
     ][] = pools.map(serializePool);
 
-    const raw = await this.contract.methods.getPoolsWithData(indexes, poolsSerialized).call(tx);
+    const raw = await this.contract.methods
+      .getPoolsWithData(indexes, poolsSerialized)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      pools: raw[1].map(el => normalizePool(el, this.sdk)),
-      totalSupply: raw[2].map(el => new BN(el)),
-      totalBorrow: raw[3].map(el => new BN(el)),
+      indexes: raw[0].map((el) => new BN(el)),
+      pools: raw[1].map((el) => normalizePool(el, this.sdk)),
+      totalSupply: raw[2].map((el) => new BN(el)),
+      totalBorrow: raw[3].map((el) => new BN(el)),
       underlyingTokens: raw[4],
       underlyingSymbols: raw[5],
-      errored: raw[6]
+      errored: raw[6],
     };
   }
 
-  async getPublicPoolsWithData(
-    tx?: NonPayableTx
-  ): Promise<{
+  async getPublicPoolsWithData(tx?: NonPayableTx): Promise<{
     indexes: BN[];
     pools: Pool[];
     totalSupply: BN[];
@@ -382,13 +407,13 @@ class PoolLensV2 extends MarketContract<PoolLensV2Web3Interface> {
     const raw = await this.contract.methods.getPublicPoolsWithData().call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      pools: raw[1].map(el => normalizePool(el, this.sdk)),
-      totalSupply: raw[2].map(el => new BN(el)),
-      totalBorrow: raw[3].map(el => new BN(el)),
+      indexes: raw[0].map((el) => new BN(el)),
+      pools: raw[1].map((el) => normalizePool(el, this.sdk)),
+      totalSupply: raw[2].map((el) => new BN(el)),
+      totalBorrow: raw[3].map((el) => new BN(el)),
       underlyingTokens: raw[4],
       underlyingSymbols: raw[5],
-      errored: raw[6]
+      errored: raw[6],
     };
   }
 
@@ -396,14 +421,16 @@ class PoolLensV2 extends MarketContract<PoolLensV2Web3Interface> {
     account: string,
     tx?: NonPayableTx
   ): Promise<{
-    indexes: BN[],
-    accountPools: Pool[]
+    indexes: BN[];
+    accountPools: Pool[];
   }> {
-    const raw = await this.contract.methods.getWhitelistedPoolsByAccount(account).call(tx);
+    const raw = await this.contract.methods
+      .getWhitelistedPoolsByAccount(account)
+      .call(tx);
 
     return {
-      indexes: raw[0].map(el => new BN(el)),
-      accountPools: raw[1].map(el => normalizePool(el, this.sdk))
+      indexes: raw[0].map((el) => new BN(el)),
+      accountPools: raw[1].map((el) => normalizePool(el, this.sdk)),
     };
   }
 }
